@@ -1,13 +1,10 @@
 import { useThemeSync } from "./hooks/useThemeSync";
+import { MainRouter } from "./routers";
 
 function App() {
   useThemeSync()
 
-  return (
-    <div>
-      <h1>Bienvenido a LavApp</h1>
-    </div>
-  );
+  return <MainRouter />;
 }
 
 export default App;
