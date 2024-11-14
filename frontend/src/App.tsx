@@ -1,4 +1,7 @@
+import { useThemeSync } from "./hooks/useThemeSync";
+
 function App() {
+  useThemeSync()
 
   return (
     <div>
