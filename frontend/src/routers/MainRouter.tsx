@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
-import { Ajustes, Clientes, Dashboard, Facturacion, Login, Promociones, Servicios, Usuarios, Vehiculos, Ventas } from "@/pages";
+import { Ajustes, Clientes, Dashboard, PaginaError, Facturacion, Login, Promociones, Servicios, Usuarios, Vehiculos, Ventas } from "@/pages";
 import { MainLayout } from "@/components/Layouts";
 import { useAuthStore } from "@/contexts";
 
@@ -59,6 +59,7 @@ export const MainRouter = () => {
     {
       path: "/",
       element: <Navigate to={user ? "/dashboard" : "/login"} replace />,
+      errorElement: <PaginaError />
     },
     {
       path: "/login",
@@ -67,6 +68,7 @@ export const MainRouter = () => {
     {
       path: "/",
       element: <ProtectedRoute isAllowed={!!user} redirectTo={"/login"}><MainLayout /></ProtectedRoute>,
+      errorElement: <PaginaError />,
       children: [
         {
           path: "dashboard",
