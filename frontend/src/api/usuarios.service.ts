@@ -11,6 +11,6 @@ export const usuariosService = {
 
   deleteUsuario: (id: string) => api.delete("/usuarios", { params: { id } }),
 
-  login: (usuario: string, password: string) =>
-    api.post("/usuarios/login", { usuario, password }),
+  login: (usuario: string, clave: string) =>
+    api.post("/usuarios/login", { usuario, clave }),
 };
