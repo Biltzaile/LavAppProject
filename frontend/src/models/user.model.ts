@@ -7,5 +7,5 @@ export interface User {
 }
 
 export interface UserRegister extends User {
-  password?: string;
+  clave?: string;
 }
