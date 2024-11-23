@@ -1,51 +1,9 @@
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
-import { Ajustes, Clientes, Dashboard, PaginaError, Facturacion, Login, Promociones, Servicios, Usuarios, Vehiculos, Ventas } from "@/pages";
+import { Dashboard, PaginaError, Login } from "@/pages";
 import { MainLayout } from "@/components/Layouts";
 import { useAuthStore } from "@/contexts";
-
-const privateRoutes = [
-  {
-    path: "clientes",
-    element: <Clientes />,
-    roles: ["Administrador", "POS"]
-  },
-  {
-    path: "vehiculos",
-    element: <Vehiculos />,
-    roles: ["Administrador", "POS"]
-  },
-  {
-    path: "servicios",
-    element: <Servicios />,
-    roles: ["Administrador", "Soporte"]
-  },
-  {
-    path: "usuarios",
-    element: <Usuarios />,
-    roles: ["Administrador", "Soporte"]
-  },
-  {
-    path: "promociones",
-    element: <Promociones />,
-    roles: ["Administrador"]
-  },
-  {
-    path: "ventas",
-    element: <Ventas />,
-    roles: ["Administrador"]
-  },
-  {
-    path: "facturacion",
-    element: <Facturacion />,
-    roles: ["POS"]
-  },
-  {
-    path: "ajustes",
-    element: <Ajustes />,
-    roles: ["Soporte"]
-  },
-];
+import { privateRoutes } from "./routes";
 
 export const MainRouter = () => {
 
