@@ -1,25 +1,23 @@
 import { LoginForm } from "@/components/login/LoginForm";
 import { useAuthStore } from "@/contexts/authStore";
 import { useNavigate } from "react-router-dom";
-import { usuariosService } from "@/api/usuarios";
+import { usuariosService } from "@/api/usuarios.service";
 import { Toaster } from "@/components/ui";
-import { toast } from "sonner";
-import axios from "axios";
+import { handleApiResponse } from "@/utils/api-utils";
+import { User } from "@/models";
 
 export const Login = () => {
   const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
 
-  const handleLogin = async (usuario: string, password: string) => {
-    try {
-      const response = await usuariosService.login(usuario, password);
-      login(response.data);
+  const handleLogin = async (usuario: string, clave: string) => {
+    const { success, data } = await handleApiResponse<User>(
+      () => usuariosService.login(usuario, clave),
+      { showSuccessMessage: false }
+    );
+    if (success && data) {
+      login(data);
       navigate("/dashboard");
-    } catch (error) {
-      const errorMessage = axios.isAxiosError(error)
-        ? error?.response?.data.message
-        : "Error al iniciar sesión.";
-      toast.error(errorMessage);
     }
   };
 
