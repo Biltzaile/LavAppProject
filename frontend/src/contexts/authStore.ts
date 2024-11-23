@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface AuthState {
-  user: User;
+  user: User | null;
   login: (user: User) => void;
   logout: () => void;
 }
