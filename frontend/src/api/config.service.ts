@@ -2,6 +2,6 @@ import { api } from "@/api";
 import { AppConfig } from "@/models";
 
 export const configService = {
-  getConfig: () => api.get("/config"),
+  getConfig: () => api.get("/configuracion"),
   updateConfig: (data: AppConfig) => api.put("/config", data),
 };
