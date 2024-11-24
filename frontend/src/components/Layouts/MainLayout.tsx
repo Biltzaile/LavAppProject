@@ -36,7 +36,7 @@ export const MainLayout = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <header className="flex justify-between items-center bg-primary text-primary-foreground p-4 select-none">
+      <header className="flex justify-between items-center h-[10vh] bg-primary text-primary-foreground p-4 select-none">
         <div className="flex items-center cursor-pointer" onClick={() => navigate('/dashboard')}>
           {
             company?.logo ?
@@ -62,7 +62,7 @@ export const MainLayout = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </header>
-      <main className="flex justify-center items-center h-full p-4 select-none">
+      <main className="flex justify-center h-[90vh] p-4">
         <Outlet />
       </main>
       <Toaster richColors theme="light" />
