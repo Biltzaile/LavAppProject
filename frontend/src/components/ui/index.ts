@@ -1,3 +1,4 @@
+export * from "./DataTablePagination";
 export * from "./avatar";
 export * from "./button";
 export * from "./card";
@@ -6,7 +7,9 @@ export * from "./dropdown-menu";
 export * from "./form";
 export * from "./input";
 export * from "./label";
+export * from "./pagination";
 export * from "./popover";
+export * from "./scroll-area";
 export * from "./select";
 export * from "./sonner";
 export * from "./table";

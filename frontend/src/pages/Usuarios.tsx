@@ -15,6 +15,7 @@ import {
 import { UserDialog } from "@/components/usuarios/UserDialog";
 import { useAuthStore } from "@/contexts";
 import { handleApiResponse } from "@/utils/api-utils";
+import { DataFiltersUsuarios } from "@/components/usuarios/DataFiltersUsuarios";
 
 export const Usuarios = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -22,6 +23,8 @@ export const Usuarios = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRol, setSelectedRol] = useState("Todos");
 
   const fetchUsers = async () => {
     const { success, data } = await handleApiResponse<User[]>(
@@ -80,17 +83,32 @@ export const Usuarios = () => {
     setOpenDialog(false);
   }
 
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch = user.usuario.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesRol = selectedRol === "Todos" || user.rol === selectedRol;
+    return matchesSearch && matchesRol;
+  });
+
   return (
-    <div className="container mx-auto py-10">
-      <div className="flex justify-between items-center mb-4">
+    <div className="container mx-auto h-full py-4">
+      <div className="text-center mb-8">
         <h1 className="text-2xl font-bold">Usuarios</h1>
+      </div>
+
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
+        <DataFiltersUsuarios
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          selectedRol={selectedRol}
+          onRolChange={setSelectedRol}
+        />
         <Button onClick={handleCreate}>
           <Plus className="mr-2 h-4 w-4" /> Nuevo Usuario
         </Button>
       </div>
 
       <DataTableUsuarios
-        data={users}
+        data={filteredUsers}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
