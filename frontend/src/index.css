@@ -33,8 +33,26 @@
 @layer base {
   * {
     @apply border-border;
+    scrollbar-width: thin;
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Estilos para los scrollbars del navegador */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/60;
   }
 }
