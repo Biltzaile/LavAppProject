@@ -9,11 +9,12 @@ import {
 } from "@/components/ui/select"
 import { MEDIOS_PAGO, MEDIOS_PAGO_LABELS } from "@/constants/receipt.constants";
 import { useEffect, useState } from "react";
-import { FacturaCreada } from "@/models";
+import { Factura, FacturaCreada } from "@/models";
 import { MedioPago } from '../../constants/receipt.constants';
 import { PaymentDialog } from "./PaymentDialog";
 import { facturacionService } from "@/api/facturacion.service";
 import { handleApiResponse } from "@/utils/api-utils";
+import { ReceiptDialog } from './ReceiptDialog';
 
 interface PaymentSectionProps {
   form: UseFormReturn<FacturaCreada>;
@@ -22,6 +23,8 @@ interface PaymentSectionProps {
 
 export function PaymentSection({ form, resetForm }: PaymentSectionProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [savedReceipt, setSavedReceipt] = useState<Factura | null>(null);
+  const [showReceipt, setShowReceipt] = useState(false);
 
   const handleSave = async () => {
     const formData = form.getValues();
@@ -33,14 +36,16 @@ export function PaymentSection({ form, resetForm }: PaymentSectionProps) {
       fecha: new Date().toISOString(),
     };
 
-    const { success } = await handleApiResponse(
+    const { success, data } = await handleApiResponse(
       () => facturacionService.createFactura(facturaToSave),
       { showSuccessMessage: true, showErrorMessage: true }
     );
 
-    // if (success) {
-    //   resetForm();
-    // }
+    if (success && data) {
+      setSavedReceipt(data as Factura);
+      setDialogOpen(false);
+      setShowReceipt(true);
+    }
   };
 
   const handleDialogAction = (action: 'save' | 'cancel') => {
@@ -134,6 +139,11 @@ export function PaymentSection({ form, resetForm }: PaymentSectionProps) {
           open={dialogOpen}
           onOpenChange={setDialogOpen}
           onAction={handleDialogAction}
+        />
+        <ReceiptDialog
+          open={showReceipt}
+          onOpenChange={setShowReceipt}
+          receipt={savedReceipt}
         />
       </div>
     </>

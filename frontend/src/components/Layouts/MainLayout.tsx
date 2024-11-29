@@ -33,7 +33,7 @@ export const MainLayout = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-full">
       <header className="grid grid-cols-4 items-center h-[10vh] bg-primary text-primary-foreground px-4 select-none">
         <div className="flex col-span-1 items-center cursor-pointer" onClick={() => navigate('/dashboard')}>
           {

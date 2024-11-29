@@ -5,7 +5,8 @@ export const Facturacion = () => {
 
   return (
     <Card className="h-full">
-      <CardContent className="h-full p-6">
+      <CardContent className="flex flex-col justify-stretch h-full p-4 gap-2">
+        <h1 className="text-2xl text-center font-bold">Nueva Factura</h1>
         <RegistroFactura />
 
         {/* Tabs Para uso futuro

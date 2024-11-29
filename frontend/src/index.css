@@ -35,7 +35,11 @@
     @apply border-border;
     scrollbar-width: thin;
   }
+  html {
+    @apply h-full;
+  }
   body {
+    @apply h-full;
     @apply bg-background text-foreground;
   }
 

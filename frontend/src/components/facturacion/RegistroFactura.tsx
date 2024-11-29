@@ -160,13 +160,6 @@ export function RegistroFactura() {
     fetchServicios();
   }, [fetchServicios]);
 
-  useEffect(() => {
-    const subscription = form.watch((value) => {
-      console.log('Form values:', value);
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch, form]);
-
   const handleServicioGeneralSelect = (servicio: ServicioFactura) => {
     const serviciosAdicionales = form.getValues("servicios")
       .filter(s => s.id_servicio === 9999 || s.id_servicio >= 5000);
@@ -323,10 +316,10 @@ export function RegistroFactura() {
               </CardContent>
             </Card>
           </div>
-          <div className="row-span-2">
+          <div className="h-full row-span-2">
             {/* Promotions Card */}
             {registroData.showNextSections && (
-              <Card className="h-[calc(100%-4vh)]">
+              <Card className="h-full">
                 <CardContent className="h-full p-4">
                   <PromotionsSection setValue={form.setValue} />
                 </CardContent>
@@ -375,7 +368,7 @@ export function RegistroFactura() {
           )}
         </div>
         {/* Column 3: Selected Services & Payment */}
-        <div className="col-span-1">
+        <div className="col-span-1 h-full">
           {registroData.showNextSections && (
             <div className="flex flex-col gap-4 overflow-hidden">
               {/* Selected Services Card */}
