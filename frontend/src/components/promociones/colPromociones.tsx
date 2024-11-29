@@ -12,6 +12,7 @@ import { MoreHorizontal, Pencil, Trash, ArrowUpDown } from "lucide-react";
 import { parseISO, addHours, format } from "date-fns";
 
 const formatUTCDate = (dateStr: string) => {
+  if (!dateStr) return "";
   const date = parseISO(dateStr);
   const adjustedDate = addHours(date, 5);
   return format(adjustedDate, 'yyyy-MM-dd');
@@ -39,7 +40,7 @@ export const colPromociones = (
       header: "Fecha Inicio",
       size: 120,
       cell: ({ row }) => {
-        return formatUTCDate(row.getValue("fecha_inicio"));
+        return formatUTCDate(row?.getValue("fecha_inicio"));
       },
     },
     {
@@ -47,7 +48,7 @@ export const colPromociones = (
       header: "Fecha Fin",
       size: 120,
       cell: ({ row }) => {
-        return formatUTCDate(row.getValue("fecha_fin"));
+        return formatUTCDate(row?.getValue("fecha_fin"));
       },
     },
     {
