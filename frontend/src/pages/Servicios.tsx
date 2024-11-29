@@ -136,6 +136,9 @@ export const Servicios = () => {
             <DialogTitle className="text-center text-xl">
               {selectedServicio ? "Editar" : "Nuevo"} Servicio {activeTab === "General" ? "General" : "Adicional"}
             </DialogTitle>
+            <DialogDescription>
+              Complete el formulario para {selectedServicio ? "editar el" : "crear un nuevo"} servicio.
+            </DialogDescription>
           </DialogHeader>
           {selectedServicio ? (
             <EditServicioDialog

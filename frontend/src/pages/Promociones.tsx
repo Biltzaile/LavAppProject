@@ -109,6 +109,9 @@ export const Promociones = () => {
             <DialogTitle>
               {selectedPromocion ? "Editar" : "Nueva"} Promoción
             </DialogTitle>
+            <DialogDescription>
+              Complete el formulario para {selectedPromocion ? "modificar" : "crear"} una promoción.
+            </DialogDescription>
           </DialogHeader>
           <PromocionDialog
             promocion={selectedPromocion}

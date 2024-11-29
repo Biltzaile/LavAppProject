@@ -112,6 +112,9 @@ export const Vehiculos = () => {
             <DialogTitle>
               {selectedVehiculo ? "Editar" : "Nuevo"} Vehículo
             </DialogTitle>
+            <DialogDescription>
+              Complete el formulario para {selectedVehiculo ? "editar el" : "crear un nuevo"} vehículo.
+            </DialogDescription>
           </DialogHeader>
           <VehiculoDialog
             vehiculo={selectedVehiculo}

@@ -124,6 +124,9 @@ export const Usuarios = () => {
             <DialogTitle>
               {selectedUser ? "Editar Usuario" : "Nuevo Usuario"}
             </DialogTitle>
+            <DialogDescription>
+              Complete el formulario para {selectedUser ? "editar el" : "crear un nuevo"} usuario.
+            </DialogDescription>
           </DialogHeader>
           <UserDialog user={selectedUser} onSave={handleSave} onCancel={handleCancel} />
         </DialogContent>

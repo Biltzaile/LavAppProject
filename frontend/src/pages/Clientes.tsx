@@ -133,6 +133,9 @@ export const Clientes = () => {
             <DialogTitle>
               {selectedCliente ? "Editar Cliente" : "Nuevo Cliente"}
             </DialogTitle>
+            <DialogDescription>
+              Complete el formulario para {selectedCliente ? "editar el" : "crear un nuevo"} cliente.
+            </DialogDescription>
           </DialogHeader>
           <ClienteDialog cliente={selectedCliente} onSave={handleSave} onCancel={handleCancel} />
         </DialogContent>
@@ -161,6 +164,9 @@ export const Clientes = () => {
         <DialogContent className="max-w-[90vw] md:max-w-[700px]">
           <DialogHeader>
             <DialogTitle>Detalles del Cliente</DialogTitle>
+            <DialogDescription>
+              Información detallada del cliente seleccionado.
+            </DialogDescription>
           </DialogHeader>
           <ClienteViewDialog cliente={selectedViewCliente} />
         </DialogContent>
