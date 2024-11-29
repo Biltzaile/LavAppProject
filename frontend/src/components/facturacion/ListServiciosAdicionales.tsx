@@ -110,8 +110,8 @@ export function ListServiciosAdicionales({
 
       <Dialog open={showCustomDialog} onOpenChange={setShowCustomDialog}>
         <DialogTrigger asChild>
-          <Card className="cursor-pointer">
-            <Label className="flex items-center justify-center p-4 h-20">
+          <Card className="cursor-pointer bg-primary text-primary-foreground">
+            <Label className="flex items-center text-lg font-bold justify-center p-4 h-20">
               <Plus className="h-4 w-4 mr-2" />
               Agregar otro servicio
             </Label>
