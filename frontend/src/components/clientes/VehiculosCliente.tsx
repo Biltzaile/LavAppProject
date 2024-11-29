@@ -1,36 +1,31 @@
-
 import { useState, useEffect } from "react";
 import { Vehiculo } from "@/models";
 import { Card, CardContent } from "@/components/ui/card";
 import { DataTableVehiculos } from "../vehiculos/DataTableVehiculos";
-import { useToast } from "@/components/ui/use-toast";
+import { handleApiResponse } from "@/utils/api-utils";
+import { vehiculosService } from "@/api/vehiculos.service";
 
 interface VehiculosClienteProps {
-  documento: string;
+  documento_cliente: string;
 }
 
-export function VehiculosCliente({ documento }: VehiculosClienteProps) {
+export function VehiculosCliente({ documento_cliente }: VehiculosClienteProps) {
   const [vehiculos, setVehiculos] = useState<Vehiculo[]>([]);
-  const { toast } = useToast();
 
   useEffect(() => {
     const fetchVehiculos = async () => {
-      try {
-        const response = await fetch(`/api/vehiculos/cliente/${documento}`);
-        if (!response.ok) throw new Error("Error al cargar los vehículos");
-        const data = await response.json();
-        setVehiculos(data);
-      } catch (error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "No se pudieron cargar los vehículos del cliente",
-        });
+      const response = await handleApiResponse(
+        () => vehiculosService.getVehiculos({ documento_cliente }),
+        { showErrorMessage: true }
+      );
+
+      if (response.success && response.data) {
+        setVehiculos(response.data as Vehiculo[]);
       }
     };
 
     fetchVehiculos();
-  }, [documento]);
+  }, [documento_cliente]);
 
   return (
     <Card>
@@ -39,6 +34,7 @@ export function VehiculosCliente({ documento }: VehiculosClienteProps) {
           data={vehiculos}
           onEdit={() => { }}
           onDelete={() => { }}
+          showActions={false}
         />
       </CardContent>
     </Card>

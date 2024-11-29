@@ -161,7 +161,7 @@ export const Clientes = () => {
       </Dialog>
 
       <Dialog open={viewDialog} onOpenChange={setViewDialog}>
-        <DialogContent className="max-w-[90vw] md:max-w-[700px]">
+        <DialogContent className="max-w-[90vw] md:max-w-[850px]">
           <DialogHeader>
             <DialogTitle>Detalles del Cliente</DialogTitle>
             <DialogDescription>

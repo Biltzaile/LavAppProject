@@ -20,7 +20,7 @@ export function ClienteViewDialog({ cliente }: ClienteViewDialogProps) {
         <InfoCliente cliente={cliente} />
       </TabsContent>
       <TabsContent value="vehicles">
-        <VehiculosCliente documento={cliente.documento} />
+        <VehiculosCliente documento_cliente={cliente.documento} />
       </TabsContent>
     </Tabs>
   );

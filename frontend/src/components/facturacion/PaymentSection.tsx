@@ -38,19 +38,14 @@ export function PaymentSection({ form, resetForm }: PaymentSectionProps) {
       { showSuccessMessage: true, showErrorMessage: true }
     );
 
-    if (success) {
-      resetForm();
-    }
+    // if (success) {
+    //   resetForm();
+    // }
   };
 
-  const handleDialogAction = (action: 'save' | 'pdf' | 'cancel') => {
-
+  const handleDialogAction = (action: 'save' | 'cancel') => {
     switch (action) {
       case 'save':
-        handleSave();
-        break;
-      case 'pdf':
-        // TODO: Implement PDF view logic
         handleSave();
         break;
       case 'cancel':

@@ -24,11 +24,17 @@ interface DataTableVehiculosProps {
   data: Vehiculo[];
   onEdit: (vehiculo: Vehiculo) => void;
   onDelete: (vehiculo: Vehiculo) => void;
+  showActions?: boolean;
 }
 
-export function DataTableVehiculos({ data, onEdit, onDelete }: DataTableVehiculosProps) {
+export function DataTableVehiculos({
+  data,
+  onEdit,
+  onDelete,
+  showActions = true
+}: DataTableVehiculosProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const columns = ColVehiculos(onEdit, onDelete);
+  const columns = ColVehiculos(onEdit, onDelete, showActions);
 
   const table = useReactTable({
     data,

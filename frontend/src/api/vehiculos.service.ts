@@ -4,13 +4,16 @@ import { Vehiculo } from "@/models";
 export const vehiculosService = {
   getVehiculos: ({
     placa,
-    documento,
+    documento_cliente,
   }: {
     placa?: string;
-    documento?: string;
+    documento_cliente?: string;
   }) =>
     api.get("/vehiculos", {
-      params: { ...(placa && { placa }), ...(documento && { documento }) },
+      params: {
+        ...(placa && { placa }),
+        ...(documento_cliente && { documento_cliente }),
+      },
     }),
 
   createVehiculo: (vehiculo: Vehiculo) => api.post("/vehiculos", vehiculo),

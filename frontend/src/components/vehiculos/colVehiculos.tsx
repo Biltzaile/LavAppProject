@@ -11,12 +11,13 @@ import { MoreHorizontal, Pencil, Trash, ArrowUpDown } from "lucide-react";
 import { useAuthStore } from "@/contexts/authStore";
 
 export const ColVehiculos = (
-  handleEdit: (vehiculo: Vehiculo) => void,
-  handleDelete: (vehiculo: Vehiculo) => void
+  onEdit: (vehiculo: Vehiculo) => void,
+  onDelete: (vehiculo: Vehiculo) => void,
+  showActions: boolean = true
 ): ColumnDef<Vehiculo>[] => {
   const user = useAuthStore((state) => state.user);
 
-  return [
+  const columns: ColumnDef<Vehiculo>[] = [
     {
       accessorKey: "placa",
       size: 120,
@@ -55,7 +56,10 @@ export const ColVehiculos = (
       size: 100,
       header: "Modelo",
     },
-    {
+  ];
+
+  if (showActions) {
+    columns.push({
       id: "actions",
       size: 80,
       cell: ({ row }) => {
@@ -70,7 +74,7 @@ export const ColVehiculos = (
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={(e) => {
                 e.stopPropagation();
-                handleEdit(vehiculo);
+                onEdit(vehiculo);
               }}>
                 <Pencil className="mr-2 h-4 w-4" />
                 Editar
@@ -78,7 +82,7 @@ export const ColVehiculos = (
               {user?.rol === 'ADMINISTRADOR' && (
                 <DropdownMenuItem onClick={(e) => {
                   e.stopPropagation();
-                  handleDelete(vehiculo);
+                  onDelete(vehiculo);
                 }}>
                   <Trash className="mr-2 h-4 w-4" />
                   Eliminar
@@ -88,6 +92,8 @@ export const ColVehiculos = (
           </DropdownMenu>
         );
       },
-    },
-  ];
-}
+    });
+  }
+
+  return columns;
+};
