@@ -1,0 +1,6 @@
+ID_SERVICIO;NOMBRE;TIPO_SERVICIO;CATEGORIA;PRECIO_VARIABLE;VARIABLE;PRECIO_BASE
+5011;Film;Adicional;Moto;True;m2;50000.0
+5011;Film;Adicional;Auto;True;m2;50000.0
+5012;Film 2;Adicional;Cuatrimoto;True;m2;50000.0
+5012;Film 2;Adicional;Auto;True;m2;50000.0
+5012;Film 2;Adicional;Moto;True;m2;50000.0
