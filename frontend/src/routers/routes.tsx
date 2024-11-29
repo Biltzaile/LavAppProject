@@ -48,7 +48,7 @@ export const privateRoutes: PrivateRoute[] = [
     element: <Vehiculos />,
     roles: ["ADMINISTRADOR", "POS"],
     icon: Car,
-    title: "Control de Vehículos",
+    title: "Gestión de Vehículos",
   },
   {
     path: "servicios",
@@ -69,20 +69,20 @@ export const privateRoutes: PrivateRoute[] = [
     element: <Promociones />,
     roles: ["ADMINISTRADOR"],
     icon: Gift,
-    title: "Promociones Activas",
+    title: "Gestión de Promociones",
   },
   {
     path: "ventas",
     element: <Ventas />,
     roles: ["ADMINISTRADOR"],
     icon: ShoppingCart,
-    title: "Registro de Ventas",
+    title: "Reportes de Ventas",
   },
   {
     path: "ajustes",
     element: <Ajustes />,
     roles: ["SOPORTE"],
     icon: Settings,
-    title: "Configuración",
+    title: "Configuración de la app",
   },
 ];

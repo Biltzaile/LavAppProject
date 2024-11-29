@@ -3,12 +3,12 @@ interface CompanyData {
   nit: string;
   telefono: string;
   direccion: string;
-  logo: string | null;
+  logo: string;
 }
 
 interface ThemeColors {
   primario: string;
-  secundario: string;
+  foregroundPrimario: string;
 }
 
 export interface AppConfig {

@@ -36,16 +36,16 @@ export function DataFiltersUsuarios({
 
   return (
     <div className="flex gap-4 items-center">
-      <div className="flex-1">
+      <div className="w-36">
         <label className="text-sm font-medium mb-2">Usuario</label>
         <Input
-          placeholder="Buscar por usuario..."
+          placeholder="Buscar por usuario"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
           className="max-w-xs"
         />
       </div>
-      <div className="w-[200px]">
+      <div className="w-32">
         <label className="text-sm font-medium mb-2">Rol</label>
         <Select value={selectedRol} onValueChange={onRolChange}>
           <SelectTrigger>

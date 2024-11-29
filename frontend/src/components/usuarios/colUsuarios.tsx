@@ -15,6 +15,7 @@ export const colUsuarios = (
 ): ColumnDef<User>[] => [
     {
       accessorKey: "usuario",
+      size: 120,
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -27,14 +28,17 @@ export const colUsuarios = (
     },
     {
       accessorKey: "nombre",
+      size: 150,
       header: "Nombre",
     },
     {
       accessorKey: "apellido",
+      size: 150,
       header: "Apellido",
     },
     {
       accessorKey: "rol",
+      size: 100,
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -47,6 +51,7 @@ export const colUsuarios = (
     },
     {
       id: "actions",
+      size: 80,
       cell: ({ row }) => {
         const user = row.original;
         return (
@@ -57,11 +62,17 @@ export const colUsuarios = (
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => handleEdit(user)}>
+              <DropdownMenuItem onClick={(e) => {
+                e.stopPropagation();
+                handleEdit(user);
+              }}>
                 <Pencil className="mr-2 h-4 w-4" />
                 Editar
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleDelete(user)}>
+              <DropdownMenuItem onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(user);
+              }}>
                 <Trash className="mr-2 h-4 w-4" />
                 Eliminar
               </DropdownMenuItem>

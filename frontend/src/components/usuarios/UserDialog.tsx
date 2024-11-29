@@ -25,11 +25,11 @@ import { useState } from "react";
 import { handleApiResponse } from "@/utils/api-utils";
 
 const createUserSchema = z.object({
-  usuario: z.string().min(3, "Usuario debe tener al menos 3 caracteres"),
-  rol: z.string().min(1, "Debe seleccionar un rol"),
-  nombre: z.string().min(3, "Nombre debe tener al menos 3 caracteres"),
-  apellido: z.string().min(3, "Apellido debe tener al menos 3 caracteres"),
-  clave: z.string().min(6, "Contraseña debe tener al menos 6 caracteres"),
+  usuario: z.string().min(3, "Dener al menos 3 caracteres"),
+  rol: z.string().min(1, "Seleccione un rol"),
+  nombre: z.string().min(3, "Debe tener al menos 3 caracteres"),
+  apellido: z.string().min(3, "Debe tener al menos 3 caracteres"),
+  clave: z.string().min(6, "Debe tener al menos 6 caracteres"),
   confirmClave: z.string()
 }).refine((data) => data.clave === data.confirmClave, {
   message: "Las contraseñas no coinciden",
@@ -37,10 +37,10 @@ const createUserSchema = z.object({
 });
 
 const editUserSchema = z.object({
-  usuario: z.string().min(3, "Usuario debe tener al menos 3 caracteres"),
-  rol: z.string().min(1, "Debe seleccionar un rol"),
-  nombre: z.string().min(3, "Nombre debe tener al menos 3 caracteres"),
-  apellido: z.string().min(3, "Apellido debe tener al menos 3 caracteres"),
+  usuario: z.string().min(3, "Dener al menos 3 caracteres"),
+  rol: z.string().min(1, "Seleccione un rol"),
+  nombre: z.string().min(3, "Debe tener al menos 3 caracteres"),
+  apellido: z.string().min(3, "Debe tener al menos 3 caracteres"),
   clave: z.string().optional(),
   confirmClave: z.string().optional()
 }).refine((data) => {

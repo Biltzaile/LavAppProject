@@ -1,4 +1,3 @@
-
 import { Table } from "@tanstack/react-table";
 import {
   Select,
@@ -47,7 +46,7 @@ export function DataTablePagination<TData>({
       <div className="flex items-center space-x-2">
         <div className="text-sm font-medium">
           Página {table.getState().pagination.pageIndex + 1} de{" "}
-          {table.getPageCount()}
+          {table.getPageCount()} | Total: {table.getFilteredRowModel().rows.length} registros
         </div>
         <div className="flex items-center space-x-2">
           <Button

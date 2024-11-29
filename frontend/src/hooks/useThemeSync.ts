@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useAppStore } from "@/contexts/appSore";
+import { useAppStore } from "@/contexts/appStore";
 import { updateThemeColors } from "@/lib/theme";
 
 export const useThemeSync = () => {
@@ -7,7 +7,7 @@ export const useThemeSync = () => {
 
   useEffect(() => {
     if (colors) {
-      updateThemeColors(colors.primario, colors.secundario);
+      updateThemeColors(colors.primario, colors.foregroundPrimario);
     }
   }, [colors]);
 };

@@ -90,19 +90,19 @@ export const Usuarios = () => {
   });
 
   return (
-    <div className="container mx-auto h-full py-4">
+    <div className="container lg:max-w-screen-lg mx-auto h-full py-4">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold">Usuarios</h1>
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end gap-4 mb-4">
         <DataFiltersUsuarios
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           selectedRol={selectedRol}
           onRolChange={setSelectedRol}
         />
-        <Button onClick={handleCreate}>
+        <Button type="button" onClick={handleCreate}>
           <Plus className="mr-2 h-4 w-4" /> Nuevo Usuario
         </Button>
       </div>
@@ -115,7 +115,7 @@ export const Usuarios = () => {
 
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent
-          className="max-w-[90vw] max-h-[90vh] md:max-w-[600px]"
+          className="max-w-[90vw] md:max-w-[600px] max-h-[98vh] overflow-y-auto"
           onPointerDownOutside={(e) => e.preventDefault()}
           onInteractOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}

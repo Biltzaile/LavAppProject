@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   flexRender,
   getCoreRowModel,
@@ -51,14 +51,17 @@ export function DataTableUsuarios({
   });
 
   return (
-    <div className="rounded-md border">
-      <div className="relative">
-        <Table>
-          <TableHeader className="sticky top-0 bg-white z-10">
+    <div className="flex flex-col rounded-md border">
+      <Table>
+        <ScrollArea className={table.getRowCount() > 5 ? 'h-[50vh]' : 'h-min'}>
+          <TableHeader className="sticky top-0 bg-white shadow-md">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    style={{ width: `${header.getSize()}px` }}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -70,32 +73,30 @@ export function DataTableUsuarios({
               </TableRow>
             ))}
           </TableHeader>
-        </Table>
-        <ScrollArea className="h-[350px]">
-          <Table>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell className="py-2" key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
-                    No hay resultados.
-                  </TableCell>
+
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell className="py-2" key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No hay resultados.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+          <ScrollBar orientation="horizontal" />
         </ScrollArea>
-      </div>
-      {table.getPageCount() > 1 && <DataTablePagination table={table} />}
+      </Table>
+      {table.getRowCount() >= 10 && <DataTablePagination table={table} />}
     </div >
   );
 }

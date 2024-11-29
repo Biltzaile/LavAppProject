@@ -1,2 +1,2 @@
-export * from "./appSore";
+export * from "./appStore";
 export * from "./authStore";

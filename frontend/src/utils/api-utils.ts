@@ -41,7 +41,7 @@ export async function handleApiResponse<T>(
     }
     return {
       success: true,
-      data: response?.data?.data,
+      data: response.data.data || (null as T),
     };
   } catch (error) {
     if (showErrorMessage && axios.isAxiosError(error)) {

@@ -10,7 +10,7 @@ interface DashboardCardProps {
 export const DashboardCard = ({ icon: Icon, title, onClick }: DashboardCardProps) => {
   return (
     <Card
-      className="px-16 py-8 flex items-center gap-4 hover:shadow-lg hover:shadow-primary/60 hover:bg-primary/80 hover:text-white hover:border-primary cursor-pointer transition group"
+      className="px-16 py-8 flex items-center gap-4 hover:shadow-lg hover:shadow-primary/60 hover:bg-primary/80 hover:text-primary-foreground hover:border-primary cursor-pointer transition group"
       onClick={onClick}
     >
       <Icon className="w-12 h-12 transition-transform group-hover:scale-110" />

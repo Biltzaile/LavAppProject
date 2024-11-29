@@ -1,10 +1,10 @@
-// src/stores/appStore.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useAuthStore } from "./authStore";
 import { AppConfig, AppState } from "@/models";
 import { configService } from "@/api";
 import axios from "axios";
+import { handleApiResponse } from "@/utils/api-utils";
 
 export const useAppStore = create<AppState>()(
   persist(
@@ -23,9 +23,15 @@ export const useAppStore = create<AppState>()(
         }
 
         try {
-          const { data } = await configService.getConfig();
-          const { empresa, tema } = data;
-          set({ empresa: empresa, tema: tema });
+          const response = await handleApiResponse<AppConfig>(
+            () => configService.getConfig(),
+            { showSuccessMessage: false }
+          );
+
+          if (response.success && response.data) {
+            const { empresa, tema } = response.data;
+            set({ empresa, tema });
+          }
         } catch (error) {
           if (axios.isAxiosError(error)) {
             set({ error: error.message });
@@ -65,7 +71,7 @@ export const useAppStore = create<AppState>()(
           empresa: null,
           tema: {
             primario: "222 47% 11%",
-            secundario: "210 40% 96%",
+            foregroundPrimario: "0 0% 100%",
           },
           error: null,
         }),
