@@ -17,7 +17,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Cliente } from "@/models";
-import { colClientes } from "./colClientes";
+import { ColClientes } from "./colClientes";
 import { useState } from "react";
 
 interface DataTableClientesProps {
@@ -29,7 +29,7 @@ interface DataTableClientesProps {
 
 export function DataTableClientes({ data, onEdit, onDelete, onRowClick }: DataTableClientesProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const columns = colClientes(onEdit, onDelete);
+  const columns = ColClientes(onEdit, onDelete);
 
   const table = useReactTable({
     data,

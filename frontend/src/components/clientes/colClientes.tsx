@@ -8,11 +8,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash, ArrowUpDown } from "lucide-react";
+import { useAuthStore } from "@/contexts/authStore";
 
-export const colClientes = (
+export const ColClientes = (
   handleEdit: (cliente: Cliente) => void,
   handleDelete: (cliente: Cliente) => void
-): ColumnDef<Cliente>[] => [
+): ColumnDef<Cliente>[] => {
+  const user = useAuthStore((state) => state.user);
+
+  return [
     {
       accessorKey: "documento",
       size: 120,
@@ -74,16 +78,19 @@ export const colClientes = (
                 <Pencil className="mr-2 h-4 w-4" />
                 Editar
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(cliente);
-              }}>
-                <Trash className="mr-2 h-4 w-4" />
-                Eliminar
-              </DropdownMenuItem>
+              {user?.rol === 'ADMINISTRADOR' && (
+                <DropdownMenuItem onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(cliente);
+                }}>
+                  <Trash className="mr-2 h-4 w-4" />
+                  Eliminar
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
       },
     },
   ];
+}

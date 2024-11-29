@@ -8,11 +8,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Pencil, Trash, ArrowUpDown } from "lucide-react";
+import { useAuthStore } from "@/contexts/authStore";
 
-export const colVehiculos = (
+export const ColVehiculos = (
   handleEdit: (vehiculo: Vehiculo) => void,
   handleDelete: (vehiculo: Vehiculo) => void
-): ColumnDef<Vehiculo>[] => [
+): ColumnDef<Vehiculo>[] => {
+  const user = useAuthStore((state) => state.user);
+
+  return [
     {
       accessorKey: "placa",
       size: 120,
@@ -71,16 +75,19 @@ export const colVehiculos = (
                 <Pencil className="mr-2 h-4 w-4" />
                 Editar
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={(e) => {
-                e.stopPropagation();
-                handleDelete(vehiculo);
-              }}>
-                <Trash className="mr-2 h-4 w-4" />
-                Eliminar
-              </DropdownMenuItem>
+              {user?.rol === 'ADMINISTRADOR' && (
+                <DropdownMenuItem onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(vehiculo);
+                }}>
+                  <Trash className="mr-2 h-4 w-4" />
+                  Eliminar
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
       },
     },
   ];
+}

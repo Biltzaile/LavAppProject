@@ -1,7 +1,7 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Cliente } from "@/models";
-import { Card, CardContent } from "@/components/ui/card";
+import { InfoCliente } from "./InfoCliente";
+import { VehiculosCliente } from "./VehiculosCliente";
 
 interface ClienteViewDialogProps {
   cliente: Cliente | null;
@@ -17,35 +17,10 @@ export function ClienteViewDialog({ cliente }: ClienteViewDialogProps) {
         <TabsTrigger value="vehicles">Vehículos</TabsTrigger>
       </TabsList>
       <TabsContent value="info">
-        <Card>
-          <CardContent className="space-y-4 pt-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium">Documento</label>
-                <p>{cliente.documento}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium">Nombre Completo</label>
-                <p>{cliente.nombre} {cliente.apellido}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium">Teléfono</label>
-                <p>{cliente.telefono}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium">Email</label>
-                <p>{cliente.email}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <InfoCliente cliente={cliente} />
       </TabsContent>
       <TabsContent value="vehicles">
-        <Card>
-          <CardContent className="pt-4">
-            <p className="text-muted-foreground">Lista de vehículos pendiente...</p>
-          </CardContent>
-        </Card>
+        <VehiculosCliente documento={cliente.documento} />
       </TabsContent>
     </Tabs>
   );

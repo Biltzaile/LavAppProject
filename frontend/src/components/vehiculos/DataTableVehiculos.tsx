@@ -17,7 +17,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Vehiculo } from "@/models";
-import { colVehiculos } from "./colVehiculos";
+import { ColVehiculos } from "./colVehiculos";
 import { useState } from "react";
 
 interface DataTableVehiculosProps {
@@ -28,7 +28,7 @@ interface DataTableVehiculosProps {
 
 export function DataTableVehiculos({ data, onEdit, onDelete }: DataTableVehiculosProps) {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const columns = colVehiculos(onEdit, onDelete);
+  const columns = ColVehiculos(onEdit, onDelete);
 
   const table = useReactTable({
     data,

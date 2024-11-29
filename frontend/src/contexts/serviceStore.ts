@@ -12,7 +12,7 @@ interface ServicesStore {
     categoria: string
   ) => ServicioAdicional[];
   getPrecioServicioGeneral: (
-    servicioId: number,
+    servicioId: number | undefined,
     categoria: string,
     grupo: number
   ) => number | undefined;
