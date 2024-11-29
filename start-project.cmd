@@ -1,4 +1,3 @@
-
 :: ====================================================
 :: Script de inicio de proyecto LavApp
 :: Autor: Equipo LavApp
@@ -9,6 +8,21 @@
 @echo off
 setlocal EnableDelayedExpansion
 title LavApp - Script de inicio
+
+:: Función de animación de carga
+:loading
+set /a counter=0
+set "spinner=\|/-"
+:spin
+set /a counter+=1
+if !counter! gtr %~2 goto :eof
+for /l %%i in (0,1,3) do (
+    cls
+    echo %~1
+    echo !spinner:~%%i,1!
+    timeout /t 0 /nobreak >nul
+)
+goto spin
 
 echo Verificando requisitos previos...
 
@@ -30,6 +44,9 @@ if %errorlevel% neq 0 (
 
 echo Requisitos previos verificados correctamente.
 
+echo Configurando el proyecto
+call :loading "Preparando entorno..." 12
+
 :: Configurar el backend
 cd backend
 echo Verificando entorno virtual de Python...
@@ -43,28 +60,35 @@ IF EXIST "venv\Scripts\activate.bat" (
     call venv\Scripts\activate
 )
 
+call :loading "Configurando entorno virtual..." 8
+
 echo Instalando dependencias del backend...
+call :loading "Instalando requerimientos de Python..." 15
 pip install -r requirements.txt
 
 :: Configurar el frontend
 cd ..\frontend
 echo Instalando dependencias del frontend...
+call :loading "Instalando módulos de Node..." 20
 call npm install
 
 :: Iniciar servicios
 echo Iniciando servicios...
+call :loading "Iniciando backend..." 10
 
 :: Iniciar backend en una nueva ventana
 start cmd /k "cd ../backend && call venv\Scripts\activate && python main.py"
 
-:: Esperar unos segundos para que el backend inicie
-timeout /t 5
+call :loading "Esperando backend..." 8
+timeout /t 5 >nul
+
+call :loading "Iniciando frontend..." 10
 
 :: Iniciar frontend en una nueva ventana
 start cmd /k "cd ../frontend && npm run dev"
 
-:: Esperar unos segundos para que el frontend inicie
-timeout /t 5
+call :loading "Esperando frontend..." 8
+timeout /t 5 >nul
 
 :: Abrir el navegador
 start http://localhost:5173
