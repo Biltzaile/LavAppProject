@@ -35,6 +35,14 @@ class FacturaServices:
             return cls.NUMERO_INICIAL_FACTURA
 
     @classmethod
+    def _safe_int_convert(cls, value):
+        """Convierte de manera segura un valor a entero"""
+        try:
+            return int(float(value))
+        except (ValueError, TypeError):
+            return 0
+
+    @classmethod
     def get_all(cls):
         cls._ensure_csv_exists()
         try:
@@ -48,22 +56,22 @@ class FacturaServices:
                     
                     if factura_id not in facturas_dict:
                         # Convertir la fecha al formato deseado
-                        fecha_str = row['fecha']
-                        try:
-                            # Intentar parsear la fecha ISO
-                            fecha_dt = datetime.fromisoformat(fecha_str)
-                            # Convertir a formato YYYY-MM-DD
-                            fecha_formatted = fecha_dt.date().isoformat()
-                        except ValueError:
-                            # Si falla, mantener la fecha original
-                            fecha_formatted = fecha_str
+                        # fecha_str = row['fecha']
+                        # try:
+                        #     # Intentar parsear la fecha ISO
+                        #     fecha_dt = datetime.fromisoformat(fecha_str)
+                        #     # Convertir a formato YYYY-MM-DD
+                        #     fecha_formatted = fecha_dt.date().isoformat()
+                        # except ValueError:
+                        #     # Si falla, mantener la fecha original
+                        #     fecha_formatted = fecha_str
 
                         facturas_dict[factura_id] = {
-                            'factura': int(row['factura']),
-                            'fecha': fecha_formatted,  # Usar la fecha formateada
+                            'factura': cls._safe_int_convert(row['factura']),
+                            'fecha': row['fecha'],
                             'placa': row['placa'],
                             'categoria': row['categoria'],
-                            'grupo': int(row['grupo']),
+                            'grupo': cls._safe_int_convert(row['grupo']),
                             'cliente': row['cliente'],
                             'medio_pago': row['medio_pago'],
                             'descuento': float(row['descuento']),
@@ -75,8 +83,8 @@ class FacturaServices:
                     
                     # Agregar servicio a la factura existente
                     servicio = {
-                        'servicio': int(row['servicios']),
-                        'cantidad': int(row['cantidad']),
+                        'servicio': cls._safe_int_convert(row['servicios']),
+                        'cantidad': cls._safe_int_convert(row['cantidad']),
                         'descripcion': row['descripcion'],
                         'valor': float(row['valor']),
                     }
@@ -100,8 +108,8 @@ class FacturaServices:
                         if factura is None:
                             factura = cls._process_row(row)
                         servicio = {
-                            'servicio': int(row['servicios']),
-                            'cantidad': int(row['cantidad']),
+                            'servicio': cls._safe_int_convert(row['servicios']),
+                            'cantidad': cls._safe_int_convert(row['cantidad']),
                             'descripcion': row['descripcion'],
                             'valor': float(row['valor']),
                         }
@@ -129,6 +137,15 @@ class FacturaServices:
     def create(cls, factura: Factura):
         cls._ensure_csv_exists()
         try:
+            if not factura.servicios:
+                raise ValueError("La factura debe contener al menos un servicio")
+
+            if any(s.valor <= 0 for s in factura.servicios):
+                raise ValueError("El valor de los servicios debe ser mayor a 0")
+
+            if factura.total <= 0:
+                raise ValueError("El total de la factura debe ser mayor a 0")
+
             # Leer registros existentes
             existing_rows = []
             with open(FACTURAS_DB_PATH, 'r', newline='', encoding="utf-8") as df:
@@ -171,11 +188,16 @@ class FacturaServices:
             # Actualizar el número de factura en el objeto antes de devolverlo
             factura.numero_factura = nuevo_numero
             return factura.to_dict()
+        except ValueError as ve:
+            return f"Error de validación: {str(ve)}"
         except Exception as e:
-            return f"Error al crear factura: {e}"
+            return f"Error al crear factura: {str(e)}"
 
     @classmethod
     def update(cls, factura_id: int, factura: Factura):
+        if factura_id <= 0:
+            raise ValueError("ID de factura inválido")
+            
         cls._ensure_csv_exists()
         rows = []
         
@@ -273,17 +295,17 @@ class FacturaServices:
     def _process_row(cls, row):
         """Procesa una fila del CSV para convertir en el formato requerido"""
         servicio = {
-            'servicio': int(row['servicios']),
-            'cantidad': int(row['cantidad']),
+            'servicio': cls._safe_int_convert(row['servicios']),
+            'cantidad': cls._safe_int_convert(row['cantidad']),
             'descripcion': row['descripcion'],
             'valor': float(row['valor']),
         }
         return {
-            'factura': int(row['factura']),
+            'factura': cls._safe_int_convert(row['factura']),
             'fecha': row['fecha'],
             'placa': row['placa'],
             'categoria': row['categoria'],
-            'grupo': int(row['grupo']),
+            'grupo': cls._safe_int_convert(row['grupo']),
             'cliente': row['cliente'],
             'medio_pago': row['medio_pago'],  # Asegurarse de usar la clave correcta del CSV
             'descuento': float(row['descuento']),

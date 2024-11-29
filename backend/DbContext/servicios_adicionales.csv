@@ -4,3 +4,20 @@ ID_SERVICIO;NOMBRE;TIPO_SERVICIO;CATEGORIA;PRECIO_VARIABLE;VARIABLE;PRECIO_BASE
 5012;Film 2;Adicional;Cuatrimoto;True;m2;50000.0
 5012;Film 2;Adicional;Auto;True;m2;50000.0
 5012;Film 2;Adicional;Moto;True;m2;50000.0
+5013;Aspirado Profundo;Adicional;Auto;False;;35000.0
+5013;Aspirado Profundo;Adicional;Moto;False;;25000.0
+5014;Desinfección Ozono;Adicional;Auto;False;;40000.0
+5014;Desinfección Ozono;Adicional;Moto;False;;30000.0
+5014;Desinfección Ozono;Adicional;Cuatrimoto;False;;35000.0
+5015;Polichado;Adicional;Auto;True;m2;60000.0
+5015;Polichado;Adicional;Moto;True;m2;40000.0
+5015;Polichado;Adicional;Cuatrimoto;True;m2;50000.0
+5016;Lavado Motor;Adicional;Auto;False;;45000.0
+5016;Lavado Motor;Adicional;Moto;False;;25000.0
+5016;Lavado Motor;Adicional;Cuatrimoto;False;;35000.0
+5017;Grafitis;Adicional;Auto;True;m2;80000.0
+5017;Grafitis;Adicional;Moto;True;m2;60000.0
+5017;Grafitis;Adicional;Cuatrimoto;True;m2;70000.0
+5018;Limpieza Tapicería;Adicional;Auto;True;m2;45000.0
+5018;Limpieza Tapicería;Adicional;Moto;True;m2;35000.0
+5018;Limpieza Tapicería;Adicional;Cuatrimoto;True;m2;40000.0

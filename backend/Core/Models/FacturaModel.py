@@ -1,12 +1,12 @@
 from typing import List
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 from datetime import datetime
 from typing import List, Optional
 
 
 class ServicioFactura(BaseModel):
     id_servicio: int = Field(alias='servicio', default= 9999)
-    cantidad: Optional[int] = 1
+    cantidad: Optional[float] = 1
     descripcion: str
     valor: float
 
@@ -16,13 +16,25 @@ class ServicioFactura(BaseModel):
             return 9999
         return v
 
+    @field_validator('valor')
+    def validate_valor(cls, v):
+        if v <= 0:
+            raise ValueError("El valor del servicio debe ser mayor a 0")
+        return v
+
+    @field_validator('cantidad')
+    def validate_cantidad(cls, v):
+        if v <= 0:
+            raise ValueError("La cantidad debe ser mayor a 0")
+        return v
+
 class Factura(BaseModel):
     numero_factura: Optional[int] = None
     fecha: datetime
     placa: str
     categoria: str
     grupo: int
-    id_cliente: str 
+    id_cliente: str
     medio_pago: str
     descuento: float = Field(default=0.0)
     vlr_descuento: float = Field(default=0.0)
@@ -47,6 +59,22 @@ class Factura(BaseModel):
         if v < 0:
             raise ValueError("El valor del descuento no puede ser negativo")
         return v
+
+    @model_validator(mode='after')
+    def validate_totals(self):
+        if self.total < 0:
+            raise ValueError("El total no puede ser negativo")
+        if self.subtotal < 0:
+            raise ValueError("El subtotal no puede ser negativo")
+        if not self.servicios:
+            raise ValueError("La factura debe tener al menos un servicio")
+        return self
+
+    @field_validator('placa')
+    def validate_placa(cls, v):
+        if not v or len(v.strip()) < 5:
+            raise ValueError("La placa debe tener al menos 5 caracteres")
+        return v.upper()
 
     model_config = {
         'populate_by_name': True  # Actualizado desde allow_population_by_field_name
