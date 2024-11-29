@@ -1,5 +1,14 @@
+
+:: ====================================================
+:: Script de inicio de proyecto LavApp
+:: Autor: Equipo LavApp
+:: Versión: 1.0
+:: Descripción: Script seguro para iniciar servicios de
+:: desarrollo de LavApp (Frontend y Backend)
+:: ====================================================
 @echo off
-setlocal
+setlocal EnableDelayedExpansion
+title LavApp - Script de inicio
 
 echo Verificando requisitos previos...
 
