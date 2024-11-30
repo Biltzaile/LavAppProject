@@ -6,6 +6,14 @@
 :: desarrollo de LavApp (Frontend y Backend)
 :: ====================================================
 @echo off
+:: Asegurar que estamos usando CRLF para Windows
+set "GITATTRIBUTES=.gitattributes"
+if not exist "%GITATTRIBUTES%" (
+    echo # Auto detect text files and perform LF normalization> "%GITATTRIBUTES%"
+    echo * text=auto>> "%GITATTRIBUTES%"
+    echo *.cmd text eol=crlf>> "%GITATTRIBUTES%"
+    echo *.bat text eol=crlf>> "%GITATTRIBUTES%"
+)
 :: Configurar codificación UTF-8
 chcp 65001 > nul
 setlocal EnableDelayedExpansion
