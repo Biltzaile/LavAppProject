@@ -49,7 +49,7 @@ export function DataTableReportes({ data }: DataTableReportesProps) {
   return (
     <div className="flex flex-col rounded-md border">
       <Table>
-        <ScrollArea className={table.getRowCount() > 5 ? 'h-[50vh]' : 'h-min'}>
+        <ScrollArea className={table.getRowCount() > 5 ? 'h-[45vh]' : 'h-min'}>
           <TableHeader className="sticky top-0 bg-white shadow-md">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

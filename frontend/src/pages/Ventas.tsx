@@ -5,6 +5,7 @@ import { DataTableReportes } from "@/components/reportes/DataTableReportes";
 import { DataFiltersReportes } from "@/components/reportes/DataFiltersReportes";
 import { handleApiResponse } from "@/utils/api-utils";
 import { DateRange } from "react-day-picker";
+import { ResumenVentasReporte } from "@/components/reportes/ResumenVentas";
 
 const getLastWeekRange = () => {
   const today = new Date();
@@ -21,34 +22,57 @@ export const Ventas = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(getLastWeekRange());
   const [categoriaFilter, setCategoriaFilter] = useState("Todos");
   const [metodoPagoFilter, setMetodoPagoFilter] = useState("Todos");
+  const [documentoFilter, setDocumentoFilter] = useState("");
 
-  const fetchReportes = async () => {
-    const { success, data } = await handleApiResponse(
-      () => reportesService.getReportesPorFecha(
-        dateRange?.from?.toISOString().split('T')[0],
-        dateRange?.to?.toISOString().split('T')[0]
+  const fetchData = async () => {
+    const [reportesResponse, resumenResponse] = await Promise.all([
+      handleApiResponse(
+        () => reportesService.getReportesPorFecha(
+          dateRange?.from?.toISOString().split('T')[0],
+          dateRange?.to?.toISOString().split('T')[0]
+        ),
+        { showSuccessMessage: false }
       ),
-      { showSuccessMessage: false }
-    );
+      handleApiResponse(
+        () => reportesService.getResumenVentas(
+          dateRange?.from?.toISOString().split('T')[0],
+          dateRange?.to?.toISOString().split('T')[0]
+        ),
+        { showSuccessMessage: false }
+      )
+    ]);
 
-    if (success && data) {
-      setReportes(data);
+    if (reportesResponse.success && reportesResponse.data) {
+      setReportes(reportesResponse?.data);
+    }
+
+    if (resumenResponse.success && resumenResponse.data) {
+      setResumen(resumenResponse?.data);
     }
   };
 
   useEffect(() => {
-    fetchReportes();
-  }, [dateRange]);
+    fetchData();
+  }, []); // Solo se ejecuta al montar el componente
+
+  const filteredReportes = reportes.filter((reporte) => {
+    const matchesCategoria = categoriaFilter === "Todos" || reporte.categoria === categoriaFilter;
+    const matchesMetodoPago = metodoPagoFilter === "Todos" || reporte.medio_pago === metodoPagoFilter;
+    const matchesDocumento = documentoFilter === "" ||
+      reporte.cliente.toLowerCase().includes(documentoFilter.toLowerCase());
+
+    return matchesCategoria && matchesMetodoPago && matchesDocumento;
+  });
 
   return (
-    <div className="container mx-auto py-4">
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold">Reportes de Ventas</h1>
+    <div className="container overflow-y-scroll mx-auto py-6 pb-12 space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Reportes de Ventas</h1>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 mb-4">
-        <div className="border rounded-lg p-4">
-          <h2 className="text-xl font-semibold mb-4">Filtros</h2>
+      <div className="bg-white rounded-lg shadow-md">
+        <div className="p-6">
+          <h2 className="text-xl font-semibold mb-4">Filtros de Búsqueda</h2>
           <DataFiltersReportes
             dateRange={dateRange}
             onDateRangeChange={setDateRange}
@@ -56,13 +80,25 @@ export const Ventas = () => {
             onCategoriaFilterChange={setCategoriaFilter}
             metodoPagoFilter={metodoPagoFilter}
             onMetodoPagoFilterChange={setMetodoPagoFilter}
+            documentoFilter={documentoFilter}
+            onDocumentoFilterChange={setDocumentoFilter}
+            onSearchClick={fetchData}
           />
         </div>
       </div>
 
-      <div className="mt-4">
-        <h2 className="text-xl font-semibold mb-2">Resultados</h2>
-        <DataTableReportes data={reportes} />
+      {resumen && (
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Resumen de Ventas</h2>
+          <ResumenVentasReporte resumen={resumen} />
+        </div>
+      )}
+
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Detalle de Transacciones</h2>
+        <div className="bg-white rounded-lg shadow-md">
+          <DataTableReportes data={filteredReportes} />
+        </div>
       </div>
     </div>
   );
