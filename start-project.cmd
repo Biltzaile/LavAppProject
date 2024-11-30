@@ -6,10 +6,17 @@
 :: desarrollo de LavApp (Frontend y Backend)
 :: ====================================================
 @echo off
+:: Configurar codificación UTF-8
+chcp 65001 > nul
 setlocal EnableDelayedExpansion
 title LavApp - Script de inicio
 
-:: Función de animación de carga
+:: Saltar a la ejecución principal, evitando la definición de funciones
+goto :main
+
+:: ====================================================
+:: Definición de funciones
+:: ====================================================
 :loading
 set /a counter=0
 set "spinner=\|/-"
@@ -24,6 +31,10 @@ for /l %%i in (0,1,3) do (
 )
 goto spin
 
+:: ====================================================
+:: Inicio del script principal
+:: ====================================================
+:main
 echo Verificando requisitos previos...
 
 :: Verificar Python
