@@ -71,11 +71,23 @@ IF EXIST "venv\Scripts\activate.bat" (
     call venv\Scripts\activate
 )
 
+:: Añadir pequeña pausa para asegurar que el entorno virtual está activo
+timeout /t 2 >nul
+
 call :loading "Configurando entorno virtual..." 8
 
 echo Instalando dependencias del backend...
 call :loading "Instalando requerimientos de Python..." 15
 pip install -r requirements.txt
+
+:: Verificar la instalación de fastapi
+pip show fastapi >nul 2>&1
+if %errorlevel% neq 0 (
+    echo Error: No se pudo instalar fastapi correctamente.
+    echo Intentando instalar fastapi directamente...
+    pip install fastapi
+    pip install uvicorn
+)
 
 :: Configurar el frontend
 cd ..\frontend
