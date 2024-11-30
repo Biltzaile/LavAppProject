@@ -31,10 +31,13 @@ class ReporteServices:
     def get_all(cls, fecha_inicio: str = None, fecha_fin: str = None, id_cliente: str = None):
         """Obtiene todas las facturas filtradas por rango de fecha y/o cliente."""
         try:
-            facturas = FacturaServices.get_all()
-            
-            if isinstance(facturas, str) and "Error" in facturas:
-                return facturas
+            df = cls._read_csv()
+            if isinstance(df, str):
+                return df
+                
+            # Convert timestamps to strings before converting to records
+            df['FECHA'] = df['FECHA'].dt.strftime('%Y-%m-%d %H:%M:%S')
+            facturas = df.to_dict('records')
 
             facturas_filtradas = []
             # Primero filtrar por cliente si se proporciona
@@ -58,8 +61,12 @@ class ReporteServices:
                     
                     facturas_filtradas = [
                         factura for factura in facturas_filtradas
-                        if fecha_inicio_dt <= datetime.strptime(factura['FECHA'].split('T')[0], '%Y-%m-%d').date() <= fecha_fin_dt
+                        if fecha_inicio_dt <= pd.to_datetime(factura['FECHA']).date() <= fecha_fin_dt
                     ]
+
+                    if not facturas_filtradas:
+                        return f"No se encontraron facturas para el rango de fechas especificado"
+
                 except ValueError as e:
                     return f"Error en formato de fechas: {str(e)}"
 
@@ -127,16 +134,15 @@ class ReporteServices:
         Obtiene todas las facturas filtradas por medio de pago.
         """
         try:
-            facturas = FacturaServices.get_all()
+            df = cls._read_csv()
+            if isinstance(df, str):
+                return df
             
-            if isinstance(facturas, str) and "Error" in facturas:
-                return facturas
-
-            # Filtrar facturas por medio de pago
-            facturas_filtradas = [
-                factura for factura in facturas 
-                if factura['MEDIO_PAGO'].upper() == medio_pago.upper()
-            ]
+            # Convert timestamps to strings
+            df['FECHA'] = df['FECHA'].dt.strftime('%Y-%m-%d %H:%M:%S')
+            
+            # Filter by payment method and convert to records
+            facturas_filtradas = df[df['MEDIO_PAGO'].str.contains(medio_pago, case=False, na=False)].to_dict('records')
 
             if not facturas_filtradas:
                 return f"No se encontraron facturas con medio de pago {medio_pago}"
@@ -152,16 +158,15 @@ class ReporteServices:
         Obtiene todas las facturas filtradas por número de placa.
         """
         try:
-            facturas = FacturaServices.get_all()
+            df = cls._read_csv()
+            if isinstance(df, str):
+                return df
             
-            if isinstance(facturas, str) and "Error" in facturas:
-                return facturas
-
-            # Filtrar facturas por placa
-            facturas_filtradas = [
-                factura for factura in facturas 
-                if factura['PLACA'].upper() == placa.upper()
-            ]
+            # Convert timestamps to strings
+            df['FECHA'] = df['FECHA'].dt.strftime('%Y-%m-%d %H:%M:%S')
+            
+            # Filter by license plate and convert to records
+            facturas_filtradas = df[df['PLACA'].str.upper() == placa.upper()].to_dict('records')
 
             if not facturas_filtradas:
                 return f"No se encontraron facturas para la placa {placa}"
@@ -179,13 +184,7 @@ class ReporteServices:
             if isinstance(df, str):
                 return df
 
-            # Verificar columnas requeridas
-            required_columns = ['FECHA', 'VALOR', 'FACTURA', 'MEDIO_PAGO', 'CATEGORIA']
-            missing_columns = [col for col in required_columns if col not in df.columns]
-            if missing_columns:
-                return f"Error: Columnas faltantes en el CSV: {', '.join(missing_columns)}"
-
-            # Convertir fechas y filtrar si se proporcionan fechas
+            
             if fecha_inicio and fecha_fin:
                 df['FECHA'] = pd.to_datetime(df['FECHA'])
                 fecha_inicio_dt = pd.to_datetime(fecha_inicio)
@@ -227,8 +226,8 @@ class ReporteServices:
             }
 
             medios_pago = df.groupby('MEDIO_PAGO').agg({
-                'VALOR': 'sum',
-                'FACTURA': 'nunique'
+                'VALOR': 'sum',  # Changed from 'valor' to 'VALOR'
+                'FACTURA': 'nunique'  # Changed from 'factura' to 'FACTURA'
             }).reset_index()
 
             # Procesar cada medio de pago encontrado
@@ -236,8 +235,8 @@ class ReporteServices:
                 medio = row['MEDIO_PAGO'][:2]  # Tomar solo los primeros 2 caracteres
                 if medio in medios_pago_base:
                     medios_pago_base[medio] = {
-                        "total_ventas": float(row['VALOR']),
-                        "numero_facturas": int(row['FACTURA'])
+                        "total_ventas": float(row['VALOR']),  # Changed from 'valor' to 'VALOR'
+                        "numero_facturas": int(row['FACTURA'])  # Changed from 'factura' to 'FACTURA'
                     }
 
             # Convertir diccionario a lista manteniendo todos los medios de pago
@@ -247,11 +246,12 @@ class ReporteServices:
             ]
 
             # Ventas diarias con todas las categorías
+            df['FECHA'] = pd.to_datetime(df['FECHA'])  # Ensure FECHA is datetime
             fechas_unicas = sorted(df['FECHA'].unique())
             for fecha in fechas_unicas:
                 df_fecha = df[df['FECHA'] == fecha]
                 ventas_diarias = {
-                    "fecha": str(fecha),
+                    "fecha": fecha.strftime('%Y-%m-%d %H:%M:%S'),  # Convert Timestamp to string
                     "total_ventas": float(df_fecha['VALOR'].sum()),
                     "numero_facturas": int(df_fecha['FACTURA'].nunique()),
                     "categorias": []
