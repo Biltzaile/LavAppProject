@@ -36,8 +36,11 @@ class Factura(BaseModel):
     grupo: int
     id_cliente: str
     medio_pago: str
+    iva: float = Field(default=0.0)
+    vlr_iva: float = Field(default=0.0)
     descuento: float = Field(default=0.0)
     vlr_descuento: float = Field(default=0.0)
+    bruto: float = Field(default=0.0)
     subtotal: float = Field(default=0.0)
     total: float = Field(default=0.0)
     servicios: List[ServicioFactura]
@@ -64,7 +67,7 @@ class Factura(BaseModel):
     def validate_totals(self):
         if self.total < 0:
             raise ValueError("El total no puede ser negativo")
-        if self.subtotal < 0:
+        if self.bruto < 0:
             raise ValueError("El subtotal no puede ser negativo")
         if not self.servicios:
             raise ValueError("La factura debe tener al menos un servicio")
@@ -88,9 +91,12 @@ class Factura(BaseModel):
             "categoria": self.categoria.capitalize(),
             "grupo": self.grupo,
             "cliente": self.id_cliente,
-            "medio_pago": self.medio_pago,  # Asegurar que usamos la misma clave que en CSV
+            "medio_pago": self.medio_pago,
+            "iva": self.iva,
+            "vlr_iva": self.vlr_iva,
             "descuento": self.descuento,
             "vlr_descuento": self.vlr_descuento,
+            "bruto": self.bruto,
             "subtotal": self.subtotal,
             "total": self.total,
             "servicios": [

@@ -8,9 +8,9 @@ from utilidades.config import FACTURAS_DB_PATH
 class FacturaServices:
     lista = []
     COLUMNAS_CSV = [
-        'factura', 'fecha', 'placa', 'categoria','grupo','cliente', 
-        'medio_pago', 'descuento', 'vlr_descuento', 'subtotal', 'total', 'servicios',
-        'cantidad', 'descripcion', 'valor'
+        'FACTURA', 'FECHA', 'PLACA', 'CATEGORIA', 'GRUPO', 'CLIENTE', 
+        'MEDIO_PAGO', 'IVA', 'VALOR_IVA', 'DESCUENTO', 'VLR_DESCUENTO', 'BRUTO', 'SUBTOTAL', 'TOTAL', 'SERVICIOS',
+        'CANTIDAD', 'DESCRIPCION', 'VALOR'
     ]
     NUMERO_INICIAL_FACTURA = 10000
 
@@ -46,47 +46,38 @@ class FacturaServices:
     def get_all(cls):
         cls._ensure_csv_exists()
         try:
-            facturas_dict = {}  # Diccionario para agrupar servicios por factura
+            facturas_dict = {}
             
             with open(FACTURAS_DB_PATH, 'r', newline='', encoding="utf-8") as df:
                 reader = csv.DictReader(df, delimiter=';')
                 
                 for row in reader:
-                    factura_id = row['factura']
+                    factura_id = row['FACTURA']
                     
                     if factura_id not in facturas_dict:
-                        # Convertir la fecha al formato deseado
-                        # fecha_str = row['fecha']
-                        # try:
-                        #     # Intentar parsear la fecha ISO
-                        #     fecha_dt = datetime.fromisoformat(fecha_str)
-                        #     # Convertir a formato YYYY-MM-DD
-                        #     fecha_formatted = fecha_dt.date().isoformat()
-                        # except ValueError:
-                        #     # Si falla, mantener la fecha original
-                        #     fecha_formatted = fecha_str
-
                         facturas_dict[factura_id] = {
-                            'factura': cls._safe_int_convert(row['factura']),
-                            'fecha': row['fecha'],
-                            'placa': row['placa'],
-                            'categoria': row['categoria'],
-                            'grupo': cls._safe_int_convert(row['grupo']),
-                            'cliente': row['cliente'],
-                            'medio_pago': row['medio_pago'],
-                            'descuento': float(row['descuento']),
-                            'vlr_descuento': float(row['vlr_descuento']),
-                            'subtotal': float(row['subtotal']),
-                            'total': float(row['total']),
+                            'factura': cls._safe_int_convert(row['FACTURA']),
+                            'fecha': row['FECHA'],
+                            'placa': row['PLACA'],
+                            'categoria': row['CATEGORIA'],
+                            'grupo': cls._safe_int_convert(row['GRUPO']),
+                            'cliente': row['CLIENTE'],
+                            'medio_pago': row['MEDIO_PAGO'],
+                            'iva': float(row['IVA']),
+                            'valor_iva': float(row['VALOR_IVA']),
+                            'descuento': float(row['DESCUENTO']),
+                            'vlr_descuento': float(row['VLR_DESCUENTO']),
+                            'bruto': float(row['BRUTO']),
+                            'subtotal': float(row['SUBTOTAL']),
+                            'total': float(row['TOTAL']),
                             'servicios': []
                         }
                     
-                    # Agregar servicio a la factura existente
                     servicio = {
-                        'servicio': cls._safe_int_convert(row['servicios']),
-                        'cantidad': cls._safe_int_convert(row['cantidad']),
-                        'descripcion': row['descripcion'],
-                        'valor': float(row['valor']),
+                        'servicio': cls._safe_int_convert(row['SERVICIOS']),
+                        'cantidad': cls._safe_int_convert(row['CANTIDAD']),
+                        'descripcion': row['DESCRIPCION'],
+                        'valor': float(row['VALOR']),
                     }
                     facturas_dict[factura_id]['servicios'].append(servicio)
             
@@ -104,14 +95,14 @@ class FacturaServices:
                 factura = None
                 servicios = []
                 for row in reader:
-                    if int(row['factura']) == factura_id:
+                    if int(row['FACTURA']) == factura_id:
                         if factura is None:
                             factura = cls._process_row(row)
                         servicio = {
-                            'servicio': cls._safe_int_convert(row['servicios']),
-                            'cantidad': cls._safe_int_convert(row['cantidad']),
-                            'descripcion': row['descripcion'],
-                            'valor': float(row['valor']),
+                            'servicio': cls._safe_int_convert(row['SERVICIOS']),
+                            'cantidad': cls._safe_int_convert(row['CANTIDAD']),
+                            'descripcion': row['DESCRIPCION'],
+                            'valor': float(row['VALOR']),
                         }
                         servicios.append(servicio)
                 if factura:
@@ -163,8 +154,11 @@ class FacturaServices:
                 'grupo': int(factura.grupo),
                 'cliente': factura.id_cliente,
                 'medio_pago': factura.medio_pago.upper(),
+                'iva': float(factura.iva),
+                'valor_iva': float(factura.vlr_iva),
                 'descuento': float(factura.descuento),
                 'vlr_descuento': float(factura.vlr_descuento),
+                'bruto': float(factura.bruto),
                 'subtotal': float(factura.subtotal),
                 'total': float(factura.total),
             }
@@ -220,8 +214,11 @@ class FacturaServices:
                 'grupo': int(factura.grupo),
                 'cliente': factura.id_cliente,
                 'medio_pago': factura.medio_pago.upper(),
+                'iva': float(factura.iva),
+                'valor_iva': float(factura.vlr_iva),
                 'descuento': float(factura.descuento),
                 'vlr_descuento': float(factura.vlr_descuento),
+                'bruto': float(factura.bruto),
                 'subtotal': float(factura.subtotal),
                 'total': float(factura.total),
             }
@@ -275,7 +272,7 @@ class FacturaServices:
                 total_rows = 0
                 for row in reader:
                     total_rows += 1
-                    if int(row['factura']) != factura_id:
+                    if int(row['FACTURA']) != factura_id:
                         rows.append(row)
                 
                 # Verificar si se encontraron filas para eliminar
@@ -295,22 +292,25 @@ class FacturaServices:
     def _process_row(cls, row):
         """Procesa una fila del CSV para convertir en el formato requerido"""
         servicio = {
-            'servicio': cls._safe_int_convert(row['servicios']),
-            'cantidad': cls._safe_int_convert(row['cantidad']),
-            'descripcion': row['descripcion'],
-            'valor': float(row['valor']),
+            'servicio': cls._safe_int_convert(row['SERVICIOS']),
+            'cantidad': cls._safe_int_convert(row['CANTIDAD']),
+            'descripcion': row['DESCRIPCION'],
+            'valor': float(row['VALOR']),
         }
         return {
-            'factura': cls._safe_int_convert(row['factura']),
-            'fecha': row['fecha'],
-            'placa': row['placa'],
-            'categoria': row['categoria'],
-            'grupo': cls._safe_int_convert(row['grupo']),
-            'cliente': row['cliente'],
-            'medio_pago': row['medio_pago'],  # Asegurarse de usar la clave correcta del CSV
-            'descuento': float(row['descuento']),
-            'vlr_descuento': float(row['vlr_descuento']),
-            'subtotal': float(row['subtotal']),
-            'total': float(row['total']),
+            'factura': cls._safe_int_convert(row['FACTURA']),
+            'fecha': row['FECHA'],
+            'placa': row['FACTURA'],
+            'categoria': row['CATEGORIA'],
+            'grupo': cls._safe_int_convert(row['GRUPO']),
+            'cliente': row['CLIENTE'],
+            'medio_pago': row['MEDIO_PAGO'],
+            'iva': float(row['IVA']),
+            'valor_iva': float(row['VALOR_IVA']),
+            'descuento': float(row['DESCUENTO']),
+            'vlr_descuento': float(row['VLR_DESCUENTO']),
+            'bruto': float(row['BRUTO']),
+            'subtotal': float(row['SUBTOTAL']),
+            'total': float(row['TOTAL']),
             'servicios': [servicio]
         }
