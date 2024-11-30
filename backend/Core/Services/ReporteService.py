@@ -34,11 +34,7 @@ class ReporteServices:
             facturas = FacturaServices.get_all()
             
             if isinstance(facturas, str) and "Error" in facturas:
-                return {
-                    "status": "error",
-                    "code": 400,
-                    "message": facturas
-                }
+                return facturas
 
             facturas_filtradas = []
             # Primero filtrar por cliente si se proporciona
@@ -50,12 +46,7 @@ class ReporteServices:
                 
                 # Si no hay facturas para este cliente
                 if not facturas_filtradas:
-                    return {
-                        "status": "success",
-                        "code": 200,
-                        "message": f"No se encontraron facturas para el cliente {id_cliente}",
-                        "data": []
-                    }
+                    return f"No se encontraron facturas para el cliente {id_cliente}"
             else:
                 facturas_filtradas = facturas
 
@@ -70,24 +61,12 @@ class ReporteServices:
                         if fecha_inicio_dt <= datetime.strptime(factura['fecha'].split('T')[0], '%Y-%m-%d').date() <= fecha_fin_dt
                     ]
                 except ValueError as e:
-                    return {
-                        "status": "error",
-                        "code": 400,
-                        "message": f"Error en formato de fechas: {str(e)}"
-                    }
+                    return f"Error en formato de fechas: {str(e)}"
 
-            return {
-                "status": "success",
-                "code": 200,
-                "data": facturas_filtradas
-            }
+            return facturas_filtradas
                 
         except Exception as e:
-            return {
-                "status": "error",
-                "code": 400,
-                "message": f"Error al procesar reporte: {str(e)}"
-            }
+            return f"Error al procesar reporte: {str(e)}"
 
     @classmethod
     def get_by_numero_factura(cls, numero_factura: int):
@@ -124,11 +103,7 @@ class ReporteServices:
             facturas = FacturaServices.get_all()
             
             if isinstance(facturas, str) and "Error" in facturas:
-                return {
-                    "status": "error",
-                    "code": 400,
-                    "message": facturas
-                }
+                return facturas
 
             # Filtrar facturas por id_cliente
             facturas_cliente = []
@@ -138,26 +113,13 @@ class ReporteServices:
 
             # Verificar si se encontraron facturas
             if not facturas_cliente:
-                return {
-                    "status": "success",
-                    "code": 200,
-                    "message": f"No se encontraron facturas para el cliente {id_cliente}",
-                    "data": []
-                }
+                return f"No se encontraron facturas para el cliente {id_cliente}"
 
             # Retornar las facturas encontradas
-            return {
-                "status": "success",
-                "code": 200,
-                "data": facturas_cliente
-            }
+            return facturas_cliente
 
         except Exception as e:
-            return {
-                "status": "error",
-                "code": 400,
-                "message": f"Error al procesar reporte por cliente: {str(e)}"
-            }
+            return f"Error al procesar reporte por cliente: {str(e)}"
 
     @classmethod
     def get_by_medio_pago(cls, medio_pago: str):
@@ -168,11 +130,7 @@ class ReporteServices:
             facturas = FacturaServices.get_all()
             
             if isinstance(facturas, str) and "Error" in facturas:
-                return {
-                    "status": "error",
-                    "code": 400,
-                    "message": facturas
-                }
+                return facturas
 
             # Filtrar facturas por medio de pago
             facturas_filtradas = [
@@ -181,25 +139,12 @@ class ReporteServices:
             ]
 
             if not facturas_filtradas:
-                return {
-                    "status": "success",
-                    "code": 200,
-                    "message": f"No se encontraron facturas con medio de pago {medio_pago}",
-                    "data": []
-                }
+                return f"No se encontraron facturas con medio de pago {medio_pago}"
 
-            return {
-                "status": "success",
-                "code": 200,
-                "data": facturas_filtradas
-            }
+            return facturas_filtradas
 
         except Exception as e:
-            return {
-                "status": "error",
-                "code": 400,
-                "message": f"Error al procesar reporte por medio de pago: {str(e)}"
-            }
+            return f"Error al procesar reporte por medio de pago: {str(e)}"
 
     @classmethod
     def get_by_placa(cls, placa: str):
@@ -210,11 +155,7 @@ class ReporteServices:
             facturas = FacturaServices.get_all()
             
             if isinstance(facturas, str) and "Error" in facturas:
-                return {
-                    "status": "error",
-                    "code": 400,
-                    "message": facturas
-                }
+                return facturas
 
             # Filtrar facturas por placa
             facturas_filtradas = [
@@ -223,25 +164,12 @@ class ReporteServices:
             ]
 
             if not facturas_filtradas:
-                return {
-                    "status": "success",
-                    "code": 200,
-                    "message": f"No se encontraron facturas para la placa {placa}",
-                    "data": []
-                }
+                return f"No se encontraron facturas para la placa {placa}"
 
-            return {
-                "status": "success",
-                "code": 200,
-                "data": facturas_filtradas
-            }
+            return facturas_filtradas
 
         except Exception as e:
-            return {
-                "status": "error",
-                "code": 400,
-                "message": f"Error al procesar reporte por placa: {str(e)}"
-            }
+            return f"Error al procesar reporte por placa: {str(e)}"
             
     @classmethod
     def get_resumen(cls, fecha_inicio: str = None, fecha_fin: str = None) -> Dict:
@@ -249,11 +177,7 @@ class ReporteServices:
         try:
             df = cls._read_csv()
             if isinstance(df, str):
-                return {
-                    "status": "error",
-                    "code": 400,
-                    "message": df
-                }
+                return df
 
             # Convertir fechas y filtrar si se proporcionan fechas
             if fecha_inicio and fecha_fin:
@@ -276,11 +200,7 @@ class ReporteServices:
                     ],
                     "ventas_diarias": []
                 }
-                return {
-                    "status": "success",
-                    "code": 200,
-                    "data": empty_response
-                }
+                return empty_response
 
             # Resumen general
             resumen = {
@@ -352,15 +272,7 @@ class ReporteServices:
 
                 resumen["ventas_diarias"].append(ventas_diarias)
 
-            return {
-                "status": "success",
-                "code": 200,
-                "data": resumen
-            }
+            return resumen
 
         except Exception as e:
-            return {
-                "status": "error",
-                "code": 400,
-                "message": f"Error al procesar resumen: {str(e)}"
-            }
+            return f"Error al procesar resumen: {str(e)}"

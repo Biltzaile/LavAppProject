@@ -24,7 +24,7 @@ async def reportes_por_fechas(
         facturas = ReporteServices.get_all(fecha_inicio, fecha_fin)
         
         # Verificar si hay un mensaje de error
-        if isinstance(facturas, str) and "Error" in facturas:
+        if isinstance(facturas, str):
             return error_response(
                 message=facturas,
                 status_code=400
@@ -48,7 +48,7 @@ async def reportes_por_cliente(
         facturas = ReporteServices.get_all(id_cliente=cedula_cliente)
         
         # Verificar si hay un mensaje de error
-        if isinstance(facturas, str) and "Error" in facturas:
+        if isinstance(facturas, str):
             return error_response(
                 message=facturas,
                 status_code=400
@@ -71,7 +71,7 @@ async def reportes_por_medio_pago(
         # Obtener facturas por medio de pago usando el método específico
         facturas = ReporteServices.get_by_medio_pago(medio_pago.upper())
         
-        if isinstance(facturas, str) and "Error" in facturas:
+        if isinstance(facturas, str):
             return error_response(
                 message=facturas,
                 status_code=400
@@ -95,7 +95,7 @@ async def reportes_por_numero_factura(
         facturas = ReporteServices.get_all(numero_factura)
         
         # Verificar si hay un mensaje de error
-        if isinstance(facturas, str) and "Error" in facturas:
+        if isinstance(facturas, str):
             return error_response(
                 message=facturas,
                 status_code=400
@@ -118,7 +118,7 @@ async def reportes_por_placa(
         # Llamar al método específico para buscar por placa
         facturas = ReporteServices.get_by_placa(placa.upper())
         
-        if isinstance(facturas, str) and "Error" in facturas:
+        if isinstance(facturas, str):
             return error_response(
                 message=facturas,
                 status_code=400
@@ -148,7 +148,7 @@ async def resumen(
         resumen = ReporteServices.get_resumen(fecha_inicio, fecha_fin)
         
         # Verificar si hay un mensaje de error
-        if isinstance(resumen, str) and "Error" in resumen:
+        if isinstance(resumen, str):
             return error_response(
                 message=resumen,
                 status_code=400

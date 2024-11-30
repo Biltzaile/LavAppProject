@@ -1,5 +1,5 @@
 export interface Reporte {
-  numero_factura: number;
+  factura: number;
   fecha: string;
   cliente: string;
   placa: string;
