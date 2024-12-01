@@ -4,8 +4,8 @@ interface CompanyData {
   telefono: string;
   direccion: string;
   iva: boolean;
-  valorIva: number;
-  ivaIncluido: boolean;
+  valor_iva: number;
+  iva_incluido: boolean;
   logo: string;
 }
 

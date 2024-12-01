@@ -90,8 +90,8 @@ export const Ajustes = () => {
         direccion: empresa?.direccion || "",
         logo: empresa?.logo || "",
         iva: empresa?.iva || false,
-        valorIva: empresa?.valorIva || 0,
-        ivaIncluido: empresa?.ivaIncluido || false,
+        valorIva: empresa?.valor_iva || 0,
+        ivaIncluido: empresa?.iva_incluido || false,
       },
       tema: {
         primario: tema?.primario || "0 0% 0%",

@@ -80,9 +80,9 @@ export function PaymentSection({ form, resetForm }: PaymentSectionProps) {
         let total = 0;
 
         if (empresa?.iva) {
-          const ivaRate = empresa.valorIva / 100;
+          const ivaRate = empresa.valor_iva / 100;
 
-          if (empresa.ivaIncluido) {
+          if (empresa.iva_incluido) {
             // Si el IVA está incluido, calculamos hacia atrás
             subtotal = Math.round((bruto - vlr_descuento) / (1 + ivaRate));
             vlr_iva = Math.round((bruto - vlr_descuento) - subtotal);
@@ -102,7 +102,7 @@ export function PaymentSection({ form, resetForm }: PaymentSectionProps) {
         form.setValue("bruto", bruto);
         form.setValue("vlr_descuento", vlr_descuento);
         form.setValue("subtotal", subtotal);
-        form.setValue("iva", empresa?.valorIva ?? 0);
+        form.setValue("iva", empresa?.valor_iva ?? 0);
         form.setValue("vlr_iva", vlr_iva);
         form.setValue("total", total);
       }
@@ -135,7 +135,7 @@ export function PaymentSection({ form, resetForm }: PaymentSectionProps) {
         </div>
         {empresa?.iva && (
           <div className="flex justify-between text-sm">
-            <span>IVA ({empresa.valorIva}%):</span>
+            <span>IVA ({empresa.valor_iva}%):</span>
             <span>${vlr_iva.toLocaleString()}</span>
           </div>
         )}
