@@ -29,7 +29,7 @@ class FacturaServices:
         try:
             with open(FACTURAS_DB_PATH, 'r', newline='', encoding="utf-8") as df:
                 reader = csv.DictReader(df, delimiter=';')
-                ids = set([int(row['factura']) for row in reader])  # Usar set para obtener números únicos
+                ids = set([int(row['FACTURA']) for row in reader])  # Cambiado de 'factura' a 'FACTURA'
                 return max(ids) + 1 if ids else cls.NUMERO_INICIAL_FACTURA
         except:
             return cls.NUMERO_INICIAL_FACTURA
@@ -116,7 +116,7 @@ class FacturaServices:
     def _ordenar_y_guardar_registros(cls, rows):
         """Ordena los registros por número de factura y los guarda en el archivo"""
         # Ordenar registros por número de factura
-        rows_ordenados = sorted(rows, key=lambda x: int(x['factura']))
+        rows_ordenados = sorted(rows, key=lambda x: int(x['FACTURA']))  # Cambiado de 'factura' a 'FACTURA'
         
         # Guardar registros ordenados
         with open(FACTURAS_DB_PATH, 'w', newline='', encoding="utf-8") as df:
@@ -147,20 +147,20 @@ class FacturaServices:
             nuevo_numero = cls._obtener_ultimo_id()
             
             factura_base = {
-                'factura': int(nuevo_numero),  # Usar el nuevo número autogenerado
-                'fecha': factura.fecha.isoformat(),  # Updated format
-                'placa': factura.placa.upper(),
-                'categoria': factura.categoria.capitalize(),
-                'grupo': int(factura.grupo),
-                'cliente': factura.id_cliente,
-                'medio_pago': factura.medio_pago.upper(),
-                'iva': float(factura.iva),
-                'valor_iva': float(factura.vlr_iva),
-                'descuento': float(factura.descuento),
-                'vlr_descuento': float(factura.vlr_descuento),
-                'bruto': float(factura.bruto),
-                'subtotal': float(factura.subtotal),
-                'total': float(factura.total),
+                'FACTURA': int(nuevo_numero),
+                'FECHA': factura.fecha.isoformat(),
+                'PLACA': factura.placa.upper(),
+                'CATEGORIA': factura.categoria.capitalize(),
+                'GRUPO': int(factura.grupo),
+                'CLIENTE': factura.id_cliente,
+                'MEDIO_PAGO': factura.medio_pago.upper(),
+                'IVA': float(factura.iva),
+                'VALOR_IVA': float(factura.vlr_iva),
+                'DESCUENTO': float(factura.descuento),
+                'VLR_DESCUENTO': float(factura.vlr_descuento),
+                'BRUTO': float(factura.bruto),
+                'SUBTOTAL': float(factura.subtotal),
+                'TOTAL': float(factura.total),
             }
             
             # Crear nuevos registros
@@ -168,10 +168,10 @@ class FacturaServices:
             for servicio in factura.servicios:
                 row = factura_base.copy()
                 row.update({
-                    'servicios': servicio.id_servicio,
-                    'cantidad': servicio.cantidad,
-                    'descripcion': servicio.descripcion,
-                    'valor': float(servicio.valor),
+                    'SERVICIOS': servicio.id_servicio,
+                    'CANTIDAD': servicio.cantidad,
+                    'DESCRIPCION': servicio.descripcion,
+                    'VALOR': float(servicio.valor),
                 })
                 nuevos_registros.append(row)
             

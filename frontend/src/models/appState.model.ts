@@ -3,6 +3,9 @@ interface CompanyData {
   nit: string;
   telefono: string;
   direccion: string;
+  iva: boolean;
+  valorIva: number;
+  ivaIncluido: boolean;
   logo: string;
 }
 

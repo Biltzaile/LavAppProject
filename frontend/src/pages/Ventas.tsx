@@ -56,20 +56,16 @@ export const Ventas = () => {
   }, []); // Solo se ejecuta al montar el componente
 
   const filteredReportes = reportes.filter((reporte) => {
-    const matchesCategoria = categoriaFilter === "Todos" || reporte.categoria === categoriaFilter;
-    const matchesMetodoPago = metodoPagoFilter === "Todos" || reporte.medio_pago === metodoPagoFilter;
+    const matchesCategoria = categoriaFilter === "Todos" || reporte.CATEGORIA === categoriaFilter;
+    const matchesMetodoPago = metodoPagoFilter === "Todos" || reporte.MEDIO_PAGO === metodoPagoFilter;
     const matchesDocumento = documentoFilter === "" ||
-      reporte.cliente.toLowerCase().includes(documentoFilter.toLowerCase());
+      reporte.CLIENTE.toString().toLowerCase().includes(documentoFilter.toLowerCase());
 
     return matchesCategoria && matchesMetodoPago && matchesDocumento;
   });
 
   return (
-    <div className="container overflow-y-scroll mx-auto py-6 pb-12 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Reportes de Ventas</h1>
-      </div>
-
+    <div className="container h-full mx-auto pb-6 space-y-6">
       <div className="bg-white rounded-lg shadow-md">
         <div className="p-6">
           <h2 className="text-xl font-semibold mb-4">Filtros de Búsqueda</h2>
@@ -97,7 +93,7 @@ export const Ventas = () => {
       <div>
         <h2 className="text-xl font-semibold mb-4">Detalle de Transacciones</h2>
         <div className="bg-white rounded-lg shadow-md">
-          <DataTableReportes data={filteredReportes} />
+          <DataTableReportes data={filteredReportes} resumen={resumen} />
         </div>
       </div>
     </div>

@@ -191,8 +191,12 @@ export function ReceiptPDF({ receipt, empresa, tema }: ReceiptPDFProps) {
           </View>
 
           <View style={styles.summary}>
-            <Text>Subtotal: ${receipt.subtotal.toLocaleString()}</Text>
+            <Text>Valor Bruto: ${receipt.bruto.toLocaleString()}</Text>
             <Text>Descuento ({receipt.descuento}%): -${receipt.vlr_descuento.toLocaleString()}</Text>
+            <Text>Subtotal: ${receipt.subtotal.toLocaleString()}</Text>
+            {receipt.iva > 0 && (
+              <Text>IVA ({receipt.iva}%): ${receipt.vlr_iva.toLocaleString()}</Text>
+            )}
             <Text style={styles.total}>
               Total: ${receipt.total.toLocaleString()}
             </Text>

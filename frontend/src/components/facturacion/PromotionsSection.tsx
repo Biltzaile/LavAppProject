@@ -3,11 +3,11 @@ import { parseISO, isWithinInterval, startOfDay, endOfDay, isBefore } from "date
 import { promocionesService } from "@/api/promociones.service";
 import { Promocion } from "@/models/promo.model";
 import { handleApiResponse } from "@/utils/api-utils";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { UseFormSetValue } from "react-hook-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FacturaCreada } from "@/models";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface PromotionsSectionProps {
   setValue: UseFormSetValue<FacturaCreada>;
@@ -15,6 +15,7 @@ interface PromotionsSectionProps {
 
 export function PromotionsSection({ setValue }: PromotionsSectionProps) {
   const [promociones, setPromociones] = useState<Promocion[]>([]);
+  const [selectedPromocion, setSelectedPromocion] = useState<number | null>(null);
 
   const adjustUTCDate = (dateStr: string | null, isEndDate: boolean = false) => {
     if (!dateStr) return undefined;
@@ -63,9 +64,15 @@ export function PromotionsSection({ setValue }: PromotionsSectionProps) {
     fetchPromociones();
   }, [setValue, isPromocionActiva]);
 
-  const handlePromocionChange = (value: string) => {
-    const promocion = promociones.find(p => p.id_promocion === parseInt(value));
-    setValue("descuento", promocion?.porcentaje || 0);
+  const handlePromocionChange = (checked: boolean, promocionId: number) => {
+    if (checked) {
+      const promocion = promociones.find(p => p.id_promocion === promocionId);
+      setValue("descuento", promocion?.porcentaje || 0);
+      setSelectedPromocion(promocionId);
+    } else {
+      setValue("descuento", 0);
+      setSelectedPromocion(null);
+    }
   };
 
   if (promociones.length === 0) {
@@ -76,28 +83,34 @@ export function PromotionsSection({ setValue }: PromotionsSectionProps) {
     <div className="h-full flex flex-col">
       <h3 className="text-lg font-semibold mb-4">Promociones Disponibles</h3>
       <ScrollArea className="h-[calc(100vh-30rem)] pr-4">
-        <RadioGroup
-          defaultValue={promociones[0].id_promocion?.toString()}
-          onValueChange={handlePromocionChange}
-          className="flex flex-col gap-2"
-        >
+        <div className="flex flex-col gap-2">
           {promociones.map((promocion) => (
-            <div key={promocion.id_promocion} className="flex items-center space-x-0">
-              <RadioGroupItem
-                value={promocion.id_promocion?.toString() || ""}
-                id={`promo-${promocion.id_promocion}`}
-                className="peer sr-only"
-              />
-              <Label
-                htmlFor={`promo-${promocion.id_promocion}`}
-                className="flex w-full items-center justify-between px-4 py-2 text-sm border rounded-md cursor-pointer peer-data-[state=checked]:bg-primary/5 peer-data-[state=checked]:border-primary/50 hover:bg-muted"
-              >
-                <span className="font-medium">{promocion.descripcion}</span>
+            <div
+              key={promocion.id_promocion}
+              className="flex items-center space-x-0"
+              onClick={() => handlePromocionChange(selectedPromocion !== promocion.id_promocion, promocion.id_promocion!)}
+            >
+              <div className="flex w-full items-center justify-between px-4 py-2 text-sm border rounded-md cursor-pointer hover:bg-muted data-[selected=true]:bg-primary/5 data-[selected=true]:border-primary/50" data-selected={selectedPromocion === promocion.id_promocion}>
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id={`promo-${promocion.id_promocion}`}
+                    checked={selectedPromocion === promocion.id_promocion}
+                    onCheckedChange={(checked) => handlePromocionChange(checked as boolean, promocion.id_promocion!)}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <Label
+                    htmlFor={`promo-${promocion.id_promocion}`}
+                    className="font-medium cursor-pointer"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {promocion.descripcion}
+                  </Label>
+                </div>
                 <span className="text-muted-foreground">{promocion.porcentaje}% descuento</span>
-              </Label>
+              </div>
             </div>
           ))}
-        </RadioGroup>
+        </div>
       </ScrollArea>
     </div>
   );

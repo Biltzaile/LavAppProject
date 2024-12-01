@@ -1,13 +1,16 @@
 export interface Reporte {
   factura: number;
   fecha: string;
-  cliente: string;
   placa: string;
   categoria: string;
   grupo: number;
+  cliente: string;
   medio_pago: "TR" | "TD" | "TC" | "EF";
+  iva: number;
+  valor_iva: number;
   descuento: number;
   vlr_descuento: number;
+  bruto: number;
   subtotal: number;
   total: number;
   servicios: ServicioReporte[];

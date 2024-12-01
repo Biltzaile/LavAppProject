@@ -5,10 +5,17 @@ import { usuariosService } from "@/api/usuarios.service";
 import { Toaster } from "@/components/ui";
 import { handleApiResponse } from "@/utils/api-utils";
 import { User } from "@/models";
+import { useAppStore } from "@/contexts/appStore";
+import { useEffect } from "react";
 
 export const Login = () => {
   const login = useAuthStore((state) => state.login);
+  const fetchConfig = useAppStore((state) => state.fetchConfig);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchConfig();
+  }, []);
 
   const handleLogin = async (usuario: string, clave: string) => {
     const { success, data } = await handleApiResponse<User>(

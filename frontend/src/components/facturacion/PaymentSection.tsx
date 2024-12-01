@@ -15,6 +15,7 @@ import { PaymentDialog } from "./PaymentDialog";
 import { facturacionService } from "@/api/facturacion.service";
 import { handleApiResponse } from "@/utils/api-utils";
 import { ReceiptDialog } from './ReceiptDialog';
+import { useAppStore } from "@/contexts/appStore";
 
 interface PaymentSectionProps {
   form: UseFormReturn<FacturaCreada>;
@@ -22,6 +23,7 @@ interface PaymentSectionProps {
 }
 
 export function PaymentSection({ form, resetForm }: PaymentSectionProps) {
+  const { empresa } = useAppStore();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [savedReceipt, setSavedReceipt] = useState<Factura | null>(null);
   const [showReceipt, setShowReceipt] = useState(false);
@@ -61,90 +63,126 @@ export function PaymentSection({ form, resetForm }: PaymentSectionProps) {
 
   useEffect(() => {
     const subscription = form.watch((_value, { name }) => {
-      // Solo recalcular cuando cambian los servicios o el descuento
       if (name === "servicios" || name === "descuento") {
         const servicios = form.getValues("servicios");
         const descuentoPorcentaje = form.getValues("descuento") || 0;
 
-        // Calcular subtotal
-        const subtotal = servicios.reduce((acc, servicio) => {
+        // Calcular valor bruto
+        const bruto = servicios.reduce((acc, servicio) => {
           return acc + (servicio.valor * servicio.cantidad);
         }, 0);
 
         // Calcular valor del descuento
-        const vlr_descuento = Math.round(subtotal * (descuentoPorcentaje / 100));
+        const vlr_descuento = Math.round(bruto * (descuentoPorcentaje / 100));
 
-        // Calcular total
-        const total = subtotal - vlr_descuento;
+        let subtotal = 0;
+        let vlr_iva = 0;
+        let total = 0;
+
+        if (empresa?.iva) {
+          const ivaRate = empresa.valorIva / 100;
+
+          if (empresa.ivaIncluido) {
+            // Si el IVA está incluido, calculamos hacia atrás
+            subtotal = Math.round((bruto - vlr_descuento) / (1 + ivaRate));
+            vlr_iva = Math.round((bruto - vlr_descuento) - subtotal);
+          } else {
+            // Si el IVA no está incluido, calculamos hacia adelante
+            subtotal = bruto - vlr_descuento;
+            vlr_iva = Math.round(subtotal * ivaRate);
+          }
+          total = subtotal + vlr_iva;
+        } else {
+          subtotal = bruto - vlr_descuento;
+          total = subtotal;
+          vlr_iva = 0;
+        }
 
         // Actualizar valores en el formulario
-        form.setValue("subtotal", subtotal);
+        form.setValue("bruto", bruto);
         form.setValue("vlr_descuento", vlr_descuento);
+        form.setValue("subtotal", subtotal);
+        form.setValue("iva", empresa?.valorIva ?? 0);
+        form.setValue("vlr_iva", vlr_iva);
         form.setValue("total", total);
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [form]);
+  }, [form, empresa]);
 
-  const subtotal = form.watch("subtotal");
+  const bruto = form.watch("bruto");
   const descuento = form.watch("descuento");
   const vlr_descuento = form.watch("vlr_descuento");
+  const subtotal = form.watch("subtotal");
+  const vlr_iva = form.watch("vlr_iva");
   const total = form.watch("total");
 
   return (
     <>
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
-          <span>Subtotal:</span>
-          <span>${subtotal.toLocaleString()}</span>
+          <span>Valor Bruto:</span>
+          <span>${bruto.toLocaleString()}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span>Descuento ({descuento}%):</span>
           <span>-${vlr_descuento.toLocaleString()}</span>
         </div>
+        <div className="flex justify-between text-sm">
+          <span>Subtotal:</span>
+          <span>${subtotal.toLocaleString()}</span>
+        </div>
+        {empresa?.iva && (
+          <div className="flex justify-between text-sm">
+            <span>IVA ({empresa.valorIva}%):</span>
+            <span>${vlr_iva.toLocaleString()}</span>
+          </div>
+        )}
         <div className="flex justify-between font-semibold">
           <span>Total:</span>
           <span>${total.toLocaleString()}</span>
         </div>
       </div>
 
-      <div className="flex items-center">
-        <label className="text-sm font-medium w-1/2">Medio de Pago</label>
-        <Select
-          onValueChange={(value) => form.setValue("medio_pago", value as MedioPago)}
-          defaultValue={form.getValues("medio_pago")}
-        >
-          <SelectTrigger className="w-1/2">
-            <SelectValue placeholder="Seleccione medio de pago" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(MEDIOS_PAGO).map(([_key, value]) => (
-              <SelectItem key={value} value={value}>
-                {MEDIOS_PAGO_LABELS[value]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <div className="grid grid-cols-2 items-end gap-2">
+        <div className="col-span-1 flex flex-col justify-stretch">
+          <label className="text-sm font-medium w-1/2">Medio de Pago</label>
+          <Select
+            onValueChange={(value) => form.setValue("medio_pago", value as MedioPago)}
+            defaultValue={form.getValues("medio_pago")}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Seleccione medio de pago" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(MEDIOS_PAGO).map(([_key, value]) => (
+                <SelectItem key={value} value={value}>
+                  {MEDIOS_PAGO_LABELS[value]}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-      <div className="flex justify-end space-x-2 pt-2">
-        <Button variant="outline" onClick={resetForm}>
-          Cancelar
-        </Button>
-        <Button onClick={() => setDialogOpen(true)}>
-          Guardar Factura
-        </Button>
-        <PaymentDialog
-          open={dialogOpen}
-          onOpenChange={setDialogOpen}
-          onAction={handleDialogAction}
-        />
-        <ReceiptDialog
-          open={showReceipt}
-          onOpenChange={setShowReceipt}
-          receipt={savedReceipt}
-        />
+        <div className="col-span-1 flex justify-end space-x-2 pt-2">
+          <Button variant="outline" onClick={resetForm}>
+            Cancelar
+          </Button>
+          <Button onClick={() => setDialogOpen(true)}>
+            Guardar
+          </Button>
+          <PaymentDialog
+            open={dialogOpen}
+            onOpenChange={setDialogOpen}
+            onAction={handleDialogAction}
+          />
+          <ReceiptDialog
+            open={showReceipt}
+            onOpenChange={setShowReceipt}
+            receipt={savedReceipt}
+          />
+        </div>
       </div>
     </>
   );

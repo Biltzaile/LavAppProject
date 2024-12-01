@@ -86,9 +86,6 @@ export const Servicios = () => {
 
   return (
     <div className="container lg:max-w-screen-lg mx-auto h-full py-4">
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold">Servicios</h1>
-      </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end gap-4 mb-4">
         <DataFiltersServicios

@@ -20,8 +20,7 @@ class ReporteServices:
             
             df = pd.read_csv(FACTURAS_DB_PATH, 
                            delimiter=';',
-                           encoding='utf-8',
-                           parse_dates=['FECHA'])
+                           encoding='utf-8')
             
             return df
         except Exception as e:
@@ -31,29 +30,25 @@ class ReporteServices:
     def get_all(cls, fecha_inicio: str = None, fecha_fin: str = None, id_cliente: str = None):
         """Obtiene todas las facturas filtradas por rango de fecha y/o cliente."""
         try:
-            df = cls._read_csv()
-            if isinstance(df, str):
-                return df
-                
-            # Convert timestamps to strings before converting to records
-            df['FECHA'] = df['FECHA'].dt.strftime('%Y-%m-%d %H:%M:%S')
-            facturas = df.to_dict('records')
+            # Obtener facturas usando FacturaServices
+            facturas = FacturaServices.get_all()
+            
+            if isinstance(facturas, str) and "Error" in facturas:
+                return facturas
 
-            facturas_filtradas = []
-            # Primero filtrar por cliente si se proporciona
+            facturas_filtradas = facturas
+
+            # Filtrar por cliente si se especifica
             if id_cliente:
                 facturas_filtradas = [
-                    factura for factura in facturas 
-                    if str(factura['CLIENTE']).strip() == str(id_cliente).strip()
+                    factura for factura in facturas_filtradas 
+                    if str(factura['cliente']).strip() == str(id_cliente).strip()
                 ]
                 
-                # Si no hay facturas para este cliente
                 if not facturas_filtradas:
                     return f"No se encontraron facturas para el cliente {id_cliente}"
-            else:
-                facturas_filtradas = facturas
 
-            # Si hay fechas, aplicar filtro adicional por fechas
+            # Filtrar por fechas si se especifican
             if fecha_inicio and fecha_fin:
                 try:
                     fecha_inicio_dt = datetime.strptime(fecha_inicio, '%Y-%m-%d').date()
@@ -61,7 +56,7 @@ class ReporteServices:
                     
                     facturas_filtradas = [
                         factura for factura in facturas_filtradas
-                        if fecha_inicio_dt <= pd.to_datetime(factura['FECHA']).date() <= fecha_fin_dt
+                        if fecha_inicio_dt <= datetime.fromisoformat(factura['fecha']).date() <= fecha_fin_dt
                     ]
 
                     if not facturas_filtradas:
@@ -138,10 +133,7 @@ class ReporteServices:
             if isinstance(df, str):
                 return df
             
-            # Convert timestamps to strings
-            df['FECHA'] = df['FECHA'].dt.strftime('%Y-%m-%d %H:%M:%S')
-            
-            # Filter by payment method and convert to records
+            # Convert to records without date conversion
             facturas_filtradas = df[df['MEDIO_PAGO'].str.contains(medio_pago, case=False, na=False)].to_dict('records')
 
             if not facturas_filtradas:
@@ -162,10 +154,7 @@ class ReporteServices:
             if isinstance(df, str):
                 return df
             
-            # Convert timestamps to strings
-            df['FECHA'] = df['FECHA'].dt.strftime('%Y-%m-%d %H:%M:%S')
-            
-            # Filter by license plate and convert to records
+            # Convert to records without date conversion
             facturas_filtradas = df[df['PLACA'].str.upper() == placa.upper()].to_dict('records')
 
             if not facturas_filtradas:
@@ -251,7 +240,7 @@ class ReporteServices:
             for fecha in fechas_unicas:
                 df_fecha = df[df['FECHA'] == fecha]
                 ventas_diarias = {
-                    "fecha": fecha.strftime('%Y-%m-%d %H:%M:%S'),  # Convert Timestamp to string
+                    "fecha": fecha.isoformat(),  # Use ISO format
                     "total_ventas": float(df_fecha['VALOR'].sum()),
                     "numero_facturas": int(df_fecha['FACTURA'].nunique()),
                     "categorias": []

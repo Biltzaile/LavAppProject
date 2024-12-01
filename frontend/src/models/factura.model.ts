@@ -14,8 +14,11 @@ export interface Factura {
   grupo: number;
   id_cliente: string;
   medio_pago: string;
+  iva: number;
+  vlr_iva: number;
   descuento: number;
   vlr_descuento: number;
+  bruto: number;
   subtotal: number;
   total: number;
   servicios: ServicioFactura[];
@@ -27,6 +30,9 @@ export interface FacturaCreada {
   categoria: string;
   grupo: number;
   medio_pago: "TR" | "EF" | "TD" | "TC";
+  iva: number;
+  vlr_iva: number;
+  bruto: number;
   descuento: number;
   vlr_descuento: number;
   subtotal: number;

@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState, useRef, useEffect } from "react";  // añadir useEffect
 import { HslColor } from "react-colorful";
 import {
@@ -23,7 +24,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { X } from "lucide-react";
+import { X, Percent } from "lucide-react";
 import { getContrastColor, hslToString } from "@/lib/theme";
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
@@ -36,6 +37,9 @@ const configSchema = z.object({
     telefono: z.string().min(7, "Debe tener al menos 7 caracteres"),
     direccion: z.string().min(3, "Debe tener al menos 3 caracteres"),
     logo: z.string().min(1, "Debe ingresar un logo"),
+    iva: z.boolean(),
+    valorIva: z.number().min(0).max(100),
+    ivaIncluido: z.boolean(),
   }),
   tema: z.object({
     primario: z.string(),
@@ -85,6 +89,9 @@ export const Ajustes = () => {
         telefono: empresa?.telefono || "",
         direccion: empresa?.direccion || "",
         logo: empresa?.logo || "",
+        iva: empresa?.iva || false,
+        valorIva: empresa?.valorIva || 0,
+        ivaIncluido: empresa?.ivaIncluido || false,
       },
       tema: {
         primario: tema?.primario || "0 0% 0%",
@@ -186,46 +193,146 @@ export const Ajustes = () => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="empresa.nit"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>NIT</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                <div className="grid grid-cols-3 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="empresa.nit"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>NIT</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="empresa.telefono"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Teléfono</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="empresa.direccion"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Dirección</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="empresa.iva"
+                    render={({ field }) => (
+                      <FormItem className="space-y-0">
+                        <FormLabel>¿Aplicar IVA?</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={(value) => field.onChange(value === 'true')}
+                            defaultValue={field.value ? 'true' : 'false'}
+                            className="flex gap-4"
+                          >
+                            <FormItem className="flex items-center space-x-0">
+                              <FormControl>
+                                <RadioGroupItem value="true" className="sr-only peer" />
+                              </FormControl>
+                              <FormLabel className="flex items-center justify-center px-3 py-2 text-sm border rounded-md cursor-pointer peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-white">
+                                Sí
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-0">
+                              <FormControl>
+                                <RadioGroupItem value="false" className="sr-only peer" />
+                              </FormControl>
+                              <FormLabel className="flex items-center justify-center px-3 py-2 text-sm border rounded-md cursor-pointer peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-white">
+                                No
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  {form.watch("empresa.iva") && (
+                    <>
+                      <FormField
+                        control={form.control}
+                        name="empresa.valorIva"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Porcentaje de IVA</FormLabel>
+                            <FormControl>
+                              <div className="relative">
+                                <Input
+                                  type="number"
+                                  defaultValue={0}
+                                  {...field}
+                                  onChange={e => field.onChange(parseFloat(e.target.value))}
+                                  className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                />
+                                <Percent className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="empresa.ivaIncluido"
+                        render={({ field }) => (
+                          <FormItem className="space-y-0">
+                            <FormLabel>IVA incluido</FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={(value) => field.onChange(value === 'true')}
+                                defaultValue={field.value ? 'true' : 'false'}
+                                className="flex gap-4"
+                              >
+                                <FormItem className="flex items-center space-x-0">
+                                  <FormControl>
+                                    <RadioGroupItem value="true" className="sr-only peer" />
+                                  </FormControl>
+                                  <FormLabel className="flex items-center justify-center px-3 py-2 text-sm border rounded-md cursor-pointer peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-white">
+                                    Sí
+                                  </FormLabel>
+                                </FormItem>
+                                <FormItem className="flex items-center space-x-0">
+                                  <FormControl>
+                                    <RadioGroupItem value="false" className="sr-only peer" />
+                                  </FormControl>
+                                  <FormLabel className="flex items-center justify-center px-3 py-2 text-sm border rounded-md cursor-pointer peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-white">
+                                    No
+                                  </FormLabel>
+                                </FormItem>
+                              </RadioGroup>
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </>
                   )}
-                />
-                <FormField
-                  control={form.control}
-                  name="empresa.telefono"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Teléfono</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="empresa.direccion"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Dirección</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                </div>
               </CardContent>
+
             </Card>
 
             {/* Columna de apariencia */}

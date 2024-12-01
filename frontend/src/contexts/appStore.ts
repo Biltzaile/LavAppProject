@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { useAuthStore } from "./authStore";
 import { AppConfig, AppState } from "@/models";
 import { configService } from "@/api";
 import axios from "axios";
@@ -83,14 +82,8 @@ export const useAppStore = create<AppState>()(
 );
 
 // Sincronizar logout con authStore
-useAuthStore.subscribe((state, prevState) => {
-  if (prevState.user && !state.user) {
-    useAppStore.getState().resetStore();
-  }
-});
-// Sincronizar login con fetchConfig
-useAuthStore.subscribe((state, prevState) => {
-  if (!prevState.user && state.user) {
-    useAppStore.getState().fetchConfig();
-  }
-});
+// useAuthStore.subscribe((state, prevState) => {
+//   if (prevState.user && !state.user) {
+//     useAppStore.getState().resetStore();
+//   }
+// });

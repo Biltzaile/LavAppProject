@@ -43,6 +43,9 @@ const facturaSchema = z.object({
   medio_pago: z.custom<MedioPago>()
     .transform(val => val as MedioPago)
     .default('EF' as MedioPago),
+  iva: z.number().default(0),
+  vlr_iva: z.number().default(0),
+  bruto: z.number().default(0),
   descuento: z.number().default(0),
   vlr_descuento: z.number().default(0),
   subtotal: z.number().default(0),
@@ -107,6 +110,12 @@ function PlacaInput({ value, onChange, onBlur, setVehicleData, error, setError }
             setVehicleData(null);
           }}
           onBlur={onBlur}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              verifyPlaca();
+            }
+          }}
           className={error ? "border-red-500" : ""}
         />
         <Button
@@ -148,6 +157,9 @@ export function RegistroFactura() {
       categoria: "",
       grupo: 0,
       medio_pago: "EF",
+      iva: 0,
+      vlr_iva: 0,
+      bruto: 0,
       descuento: 0,
       vlr_descuento: 0,
       subtotal: 0,
@@ -204,6 +216,9 @@ export function RegistroFactura() {
         categoria: "",
         grupo: 0,
         medio_pago: "EF",
+        iva: 0,
+        vlr_iva: 0,
+        bruto: 0,
         descuento: 0,
         vlr_descuento: 0,
         subtotal: 0,
@@ -226,6 +241,9 @@ export function RegistroFactura() {
       categoria: "",
       grupo: 0,
       medio_pago: "EF",
+      iva: 0,
+      vlr_iva: 0,
+      bruto: 0,
       descuento: 0,
       vlr_descuento: 0,
       subtotal: 0,

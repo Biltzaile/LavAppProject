@@ -1,5 +1,5 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
-import { Avatar, AvatarFallback, AvatarImage, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, Toaster } from "../ui"
+import { Avatar, AvatarFallback, AvatarImage, Button, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, Toaster } from "../ui"
 import { useAppStore, useAuthStore } from "@/contexts"
 import { Home } from "lucide-react"
 import { privateRoutes } from "@/routers/routes"
@@ -12,20 +12,13 @@ export const MainLayout = () => {
   const location = useLocation()
 
   const getRouteTitle = () => {
-    const path = location.pathname.slice(1) // Remove leading slash
+    const path = location.pathname.slice(1)
     if (path === 'dashboard') {
       return `Dashboard ${user?.rol ? `- ${user.rol.charAt(0).toUpperCase() + user.rol.slice(1).toLowerCase()}` : ''}`
     }
 
     const currentRoute = privateRoutes.find(route => route.path === path)
-
-    return (
-      <div className="flex items-center gap-2">
-        <Home className="cursor-pointer hover:opacity-80 flex items-center gap-1" size={"1.5rem"} strokeWidth={3} onClick={() => navigate('/dashboard')} />
-        <span>{'/'}</span>
-        <span>{currentRoute?.title ?? path}</span>
-      </div>
-    )
+    return currentRoute?.title ?? path
   }
 
   const handleLogout = () => {
@@ -33,7 +26,7 @@ export const MainLayout = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-screen">
       <header className="grid grid-cols-4 items-center h-[10vh] bg-primary text-primary-foreground px-4 select-none">
         <div className="flex col-span-1 items-center cursor-pointer" onClick={() => navigate('/dashboard')}>
           {
@@ -62,8 +55,22 @@ export const MainLayout = () => {
           </DropdownMenu>
         </div>
       </header>
-      <main className="flex justify-center h-[90vh] p-4">
-        <Outlet />
+      <main className={`flex flex-col h-[90vh] p-4 ${location.pathname !== 'dashboard' ? 'justify-center' : 'justify-start'}`}>
+        {location.pathname !== '/dashboard' && (
+          <div className="h-[9vh]">
+            <Button
+              variant="outline"
+              onClick={() => navigate('/dashboard')}
+              className="flex items-center gap-2"
+            >
+              <Home size={16} />
+              Volver al Dashboard
+            </Button>
+          </div>
+        )}
+        <div className={`flex justify-center overflow-y-auto items-center ${location.pathname !== 'dashboard' ? 'h-[80vh]' : 'h-[89vh]'}`}>
+          <Outlet />
+        </div>
       </main>
       <Toaster richColors theme="light" />
     </div>
