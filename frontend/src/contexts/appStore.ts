@@ -4,6 +4,7 @@ import { AppConfig, AppState } from "@/models";
 import { configService } from "@/api";
 import axios from "axios";
 import { handleApiResponse } from "@/utils/api-utils";
+import { useAuthStore } from "./authStore";
 
 export const useAppStore = create<AppState>()(
   persist(
@@ -82,8 +83,8 @@ export const useAppStore = create<AppState>()(
 );
 
 // Sincronizar logout con authStore
-// useAuthStore.subscribe((state, prevState) => {
-//   if (prevState.user && !state.user) {
-//     useAppStore.getState().resetStore();
-//   }
-// });
+useAuthStore.subscribe((state, prevState) => {
+  if (prevState.user && !state.user) {
+    useAppStore.getState().resetStore();
+  }
+});
