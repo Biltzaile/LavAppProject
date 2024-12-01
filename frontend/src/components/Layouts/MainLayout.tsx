@@ -3,8 +3,10 @@ import { Avatar, AvatarFallback, AvatarImage, Button, DropdownMenu, DropdownMenu
 import { useAppStore, useAuthStore } from "@/contexts"
 import { Home } from "lucide-react"
 import { privateRoutes } from "@/routers/routes"
+import { useDocumentMeta } from "@/hooks/useDocumentMeta"
 
 export const MainLayout = () => {
+  useDocumentMeta();
   const navigate = useNavigate()
   const { empresa: company } = useAppStore()
 

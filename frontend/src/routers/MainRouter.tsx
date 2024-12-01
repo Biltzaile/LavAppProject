@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { Dashboard, PaginaError, Login } from "@/pages";
 import { MainLayout } from "@/components/Layouts";
@@ -13,7 +13,7 @@ export const MainRouter = () => {
     return !!user && allowedRoles.includes(user.rol);
   }
 
-  const router = createBrowserRouter([
+  return createBrowserRouter([
     {
       path: "/",
       element: <Navigate to={user ? "/dashboard" : "/login"} replace />,
@@ -43,6 +43,4 @@ export const MainRouter = () => {
       ]
     }
   ])
-
-  return <RouterProvider router={router} />;
 };

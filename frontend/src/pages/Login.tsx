@@ -7,8 +7,10 @@ import { handleApiResponse } from "@/utils/api-utils";
 import { User } from "@/models";
 import { useAppStore } from "@/contexts/appStore";
 import { useEffect } from "react";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 
 export const Login = () => {
+  useDocumentMeta();
   const login = useAuthStore((state) => state.login);
   const fetchConfig = useAppStore((state) => state.fetchConfig);
   const navigate = useNavigate();
