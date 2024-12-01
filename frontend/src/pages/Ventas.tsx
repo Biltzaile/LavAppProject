@@ -25,6 +25,10 @@ export const Ventas = () => {
   const [documentoFilter, setDocumentoFilter] = useState("");
 
   const fetchData = async () => {
+    resetFilters();
+    setReportes([]);
+    setResumen(null);
+
     const [reportesResponse, resumenResponse] = await Promise.all([
       handleApiResponse(
         () => reportesService.getReportesPorFecha(
@@ -55,11 +59,17 @@ export const Ventas = () => {
     fetchData();
   }, []); // Solo se ejecuta al montar el componente
 
+  const resetFilters = () => {
+    setCategoriaFilter("Todos");
+    setMetodoPagoFilter("Todos");
+    setDocumentoFilter("");
+  }
+
   const filteredReportes = reportes.filter((reporte) => {
-    const matchesCategoria = categoriaFilter === "Todos" || reporte.CATEGORIA === categoriaFilter;
-    const matchesMetodoPago = metodoPagoFilter === "Todos" || reporte.MEDIO_PAGO === metodoPagoFilter;
+    const matchesCategoria = categoriaFilter === "Todos" || reporte.categoria === categoriaFilter;
+    const matchesMetodoPago = metodoPagoFilter === "Todos" || reporte.medio_pago === metodoPagoFilter;
     const matchesDocumento = documentoFilter === "" ||
-      reporte.CLIENTE.toString().toLowerCase().includes(documentoFilter.toLowerCase());
+      reporte.cliente.toString().toLowerCase().includes(documentoFilter.toLowerCase());
 
     return matchesCategoria && matchesMetodoPago && matchesDocumento;
   });
