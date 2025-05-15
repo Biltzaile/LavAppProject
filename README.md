@@ -50,7 +50,7 @@ LavApp follows a client-server architecture with a React frontend and FastAPI ba
 
 The system is started through a unified script that launches both frontend and backend components, facilitating development and testing.
 
-> Need more details? See the [DeepWiki documentation](https://deepwiki.com/Biltzaile/LavAppProject) for in-depth guides and diagrams.
+> Need more details? See the <a href="https://deepwiki.com/Biltzaile/LavAppProject" target="_blank">DeepWiki documentation</a> for in-depth guides and diagrams.
 
 ### Frontend Architecture
 The frontend is built with React and implements protected routes based on user roles, with dedicated pages for each business function.
@@ -165,7 +165,7 @@ npm install
 npm run dev
 ```
 
-> For step-by-step guides and advanced configuration, see [DeepWiki](https://deepwiki.com/Biltzaile/LavAppProject).
+> For step-by-step guides and advanced configuration, see <a href="https://deepwiki.com/Biltzaile/LavAppProject" target="_blank">DeepWiki</a>.
 
 ### Configuration
 #### Backend Configuration
@@ -201,4 +201,4 @@ The troubleshooting guide is available in the [project Wiki](https://github.com/
 - Migrate CSV → PostgreSQL
 - Tests (pytest / RTL) and CI (GitHub Actions)
 
-> Explore more business processes and technical details in the [DeepWiki documentation](https://deepwiki.com/Biltzaile/LavAppProject).
+> Explore more business processes and technical details in the <a href="https://deepwiki.com/Biltzaile/LavAppProject" target="_blank">DeepWiki documentation</a>.
